@@ -1,0 +1,23 @@
+﻿/* Included from hungarywp4qj_Tiremo_certificate.pem */
+static const char s_mqtt_client_cert[] =
+    "-----BEGIN CERTIFICATE-----\n"
+    "MIIDWTCCAkGgAwIBAgIUaAyJR07W2mxEiSn+ckO+2ULqRnIwDQYJKoZIhvcNAQEL\n"
+    "BQAwTTFLMEkGA1UECwxCQW1hem9uIFdlYiBTZXJ2aWNlcyBPPUFtYXpvbi5jb20g\n"
+    "SW5jLiBMPVNlYXR0bGUgU1Q9V2FzaGluZ3RvbiBDPVVTMB4XDTI2MDYwODExMTkx\n"
+    "M1oXDTQ5MTIzMTIzNTk1OVowHjEcMBoGA1UEAwwTQVdTIElvVCBDZXJ0aWZpY2F0\n"
+    "ZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOB3gc59FSv6/P3qudgq\n"
+    "VKch+Lp1O94juQnoRDMC8a3I0iFlTSgqEJeGNmJACOwHTo9p7clFXFnmK9BCVDd4\n"
+    "o6WPmBL2z8heNjl2GOmvUZ0QT8gO/InLl3TfaVZAEHvsz+XompRO6uN6VGcEIbQU\n"
+    "1rd/T0EOQvweczNME0eIwbkKFGu6oFxp8pXGcPJZ3Z5Y1dteF7ZpgeJBVP/2b5bS\n"
+    "RX7bD0aRCWuMo3uP/NvSgi26dsAM6HZhy1jI9urkpaGdL0buLILoXT8dbNRoOsIS\n"
+    "DezdI6D8EnPwamdFHq3fhKmFydQGqowoDlh+XK3I5xpzaBgdM8DX3Kg7TWRtwe1j\n"
+    "TWUCAwEAAaNgMF4wHwYDVR0jBBgwFoAUUAZeu4f2NcViCWmXISFEOMUrdYQwHQYD\n"
+    "VR0OBBYEFFe8g1ViEfPivbd3PHrqlljEuNqTMAwGA1UdEwEB/wQCMAAwDgYDVR0P\n"
+    "AQH/BAQDAgeAMA0GCSqGSIb3DQEBCwUAA4IBAQCAygP22iwfpReA+ua/yEpOAMrE\n"
+    "QfdtOrPXfrRr0g0hHqGICKD/tLgfcN4z6opCv4+HgdERnZ4AtP0Kl41Xzk2HKACm\n"
+    "DCPq8t71Rk0D2epLJhmFcSR3y3m1XDLPdK089toXyIIjUqtROZpkOGa+R4aOvBu6\n"
+    "R6turBpmFl6XJ0mqsURclGD2EnPii/qhwXtqE2BA6U5wD+XZAspRY9ADjmvZD5Vp\n"
+    "rrfTZvHQf3ohqeglAQoN0MvW9SuLB+Zc63+PwJewZVFb6XiPWYMql0ZgOomFPxgf\n"
+    "oz4hv0un8bUDu9qOMQSEJIu9VY3riiKUPdtf52T3y34aEQLxwW5Pwr5IZXk+\n"
+    "-----END CERTIFICATE-----\n"
+    "\n";
