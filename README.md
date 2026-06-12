@@ -1,32 +1,32 @@
-# Tiremo® Accelerator Workshops'a Hoş Geldiniz!
+# Welcome to Tiremo® Accelerator Workshops!
 
-**Merhaba!**  
-Empa Electronics tarafından düzenlenen **Tiremo® Accelerator Workshops** etkinlikleri serimize hoş geldiniz. Bu açık kaynaklı repository, workshop etkinliğimizde kullanabileceğiniz tüm gereksinimleri edinebilmeniz ve aktivitelere kolaylıkla eşlik edebilmeniz için sizinle paylaşılmıştır.
-
----
-
-## Tiremo Hakkında
-
-> **[Sonradan Doldurulacaktır]**  
-> Kart ile ilgili tanıtım bilgileri (teknik özellikler, donanım açıklamaları, görseller vb.) bu alana eklenecektir.
+**Hello!**  
+Welcome to the **Tiremo® Accelerator Workshops** series organized by Empa Electronics. This open-source repository is shared with you so you can obtain everything you need for the workshop and follow along with the activities easily.
 
 ---
 
-## Geliştirme Ortamı Kurulumu
+## About Tiremo
 
-Aktiviteye başlamadan önce aşağıdaki kurulum kılavuzunu takip ederek geliştirme ortamınızı hazırlayınız.
-
-### ↳ [Geliştirme Ortamı Kurulumu](Kurulum.md)
+> **[To be completed]**  
+> Product introduction for the board (technical specifications, hardware descriptions, images, etc.) will be added to this section.
 
 ---
 
-## Çalıştay Aktiviteleri
+## Development Environment Setup
 
-Tiremo® Accelerator Workshops etkinliğimizde kullanıcıların katılımıyla interaktif olarak Tiremo®Cortex kullanılarak gerçekleştirilecek aktiviteler için gerekli çalışma ortamları ve kurulum adımları ilgili başlıkta verilmiştir. Geliştirme ortamı kurulumunu tamamladıktan sonra aşağıdaki aktivitelere geçiniz.
+Before starting the activity, prepare your development environment by following the setup guide below.
 
-### ↳ [1) Tiremo®Cortex ile Veri Toplama ve MQTT Haberleşmesi](Uygulama.md)
+### ↳ [Development Environment Setup](SetUp.md)
 
-Tiremo®Cortex kullanılarak oluşturulan veri akışının MQTT protokolü ile bulutta işlenebilmesini konu alan aktivite için gerekli geliştirme adımlarını içerir.
+---
+
+## Workshop Activities
+
+The workshop activities use **Tiremo®Cortex** in an interactive, hands-on format. Required workspaces and setup steps are listed under each activity heading. After completing the development environment setup, proceed to the activities below.
+
+### ↳ [1) Data Collection and MQTT Communication with Tiremo®Cortex](Project/RunningCode.md)
+
+Covers the development steps for streaming data created with Tiremo®Cortex and processing it in the cloud via the MQTT protocol.
 
 ---
 
