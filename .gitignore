@@ -9,3 +9,7 @@ Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.list
 
 # Eclipse workspace metadata (machine-specific; do not commit)
 Project/Tiremo/Generation/**/TmplUserApp/Workspace/.metadata/
+
+# Eclipse toolchain/build-tools path prefs (contain absolute paths specific to each PC)
+Project/Tiremo/Generation/**/tmpl_userapp/.settings/org.eclipse.embedcdt.managedbuild.cross.core.prefs
+Project/Tiremo/Generation/**/tmpl_userapp/.settings/org.eclipse.embedcdt.managedbuild.cross.arm.core.prefs
