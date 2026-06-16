@@ -86,23 +86,23 @@
 #define BOARD_ESP32_PWR_BOOT_MS     3000U            /* ms after power-on before AT test */
 
 /* =========================================================================
- * UART: EC200 4G modem + power pins
+ * UART: SLM320 4G modem + power pins
  * ========================================================================= */
 
-#define BOARD_EC200_UART_ID         UART_ID_1
-/* EC200 AT commands use this UART. */
+#define BOARD_MODEM_UART_ID         UART_ID_1
+/* Modem AT commands use this UART. */
 
-#define BOARD_EC200_UART_PORT       PCU_ID_A
-#define BOARD_EC200_UART_RX_PIN     PCU_PIN_ID_10    /* PA10 */
-#define BOARD_EC200_UART_TX_PIN     PCU_PIN_ID_11    /* PA11 */
-#define BOARD_EC200_UART_ALT        PCU_ALT_1
+#define BOARD_MODEM_UART_PORT       PCU_ID_A
+#define BOARD_MODEM_UART_RX_PIN     PCU_PIN_ID_10    /* PA10 */
+#define BOARD_MODEM_UART_TX_PIN     PCU_PIN_ID_11    /* PA11 */
+#define BOARD_MODEM_UART_ALT        PCU_ALT_1
 
-#define BOARD_EC200_PWRKEY_PORT     PCU_ID_A
-#define BOARD_EC200_PWRKEY_PIN      PCU_PIN_ID_7
-/* PWRKEY: hold LOW >= 2 s to power on the modem. */
+#define BOARD_MODEM_PWRKEY_PORT     PCU_ID_A
+#define BOARD_MODEM_PWRKEY_PIN      PCU_PIN_ID_7
+/* PWRKEY: hold LOW >= 1 s to power on the modem. */
 
-#define BOARD_EC200_PWR_PORT        PCU_ID_C
-#define BOARD_EC200_PWR_PIN         PCU_PIN_ID_4
-/* QEC_PWR: module power supply enable pin. */
+#define BOARD_MODEM_PWR_PORT        PCU_ID_C
+#define BOARD_MODEM_PWR_PIN         PCU_PIN_ID_4
+/* Module power supply enable pin. */
 
 #endif /* BOARD_CONFIG_H */

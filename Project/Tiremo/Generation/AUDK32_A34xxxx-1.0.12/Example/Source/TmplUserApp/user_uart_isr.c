@@ -15,8 +15,11 @@
 
 #include "abov_config.h"
 #include "abov_module_config.h"
+#include "config/app_config.h"
 #include "hal_uart.h"
-#include "Libraries/EC200_4G/ec200_core.h"
+#if defined(EMPA_SLM320_4G)
+#include "Libraries/MEIG_SLM3XX/slm320.h"
+#endif
 
 #ifndef True
 #define True true
@@ -52,14 +55,18 @@ void UART_IRQHandler_UART_ID_1(uint32_t un32Event, void *pContext)
 
     if(un32Event & UART_EVENT_RX_DONE)
     {
-        EC200_UART_RxCallback();
+#if defined(EMPA_SLM320_4G)
+        SLM320_UART_RxCallback();
+#endif
     }
 
     if(un32Event & UART_EVENT_LINE_ERROR)
     {
         /* After line error HAL disables all interrupts (IER=0).
          * Restart reception to re-enable DRIE. */
-        EC200_UART_RxCallback();
+#if defined(EMPA_SLM320_4G)
+        SLM320_UART_RxCallback();
+#endif
     }
 }
 
@@ -219,4 +226,3 @@ void UART_IRQHandler_UART_ID_12(uint32_t un32Event, void *pContext)
 
 
 /* <<< End of Placeholder */
-

@@ -1,6 +1,6 @@
 /**
  * @file    mqtt_certs.h
- * @brief   Shared AWS IoT / broker TLS certificate accessors (ESP32 + EC200)
+ * @brief   Shared AWS IoT / broker TLS certificate accessors (ESP32 + SLM320)
  */
 
 #ifndef MQTT_CERTS_H

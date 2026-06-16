@@ -21,6 +21,9 @@ uint8_t MQTT_ConnectBroker(void);
 /* Publish sensor data as JSON to the configured topic */
 void MQTT_PublishSensorData(const SensorData_t *pData);
 
+/* Publish alarm JSON to MQTT_TOPIC_ALARM */
+void MQTT_PublishAlarm(const char *jsonPayload);
+
 /* Legacy function kept for compatibility */
 void MY_MqttAwsProcess(void);
 

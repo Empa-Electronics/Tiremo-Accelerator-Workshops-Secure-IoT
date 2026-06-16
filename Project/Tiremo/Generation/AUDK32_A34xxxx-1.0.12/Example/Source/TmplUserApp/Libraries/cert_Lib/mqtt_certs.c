@@ -1,6 +1,6 @@
 /**
  * @file    mqtt_certs.c
- * @brief   TLS certificate data (shared by ESP32 MQTT and EC200)
+ * @brief   TLS certificate data (shared by ESP32 MQTT and SLM320)
  */
 
 #include "mqtt_certs.h"
@@ -9,20 +9,11 @@
 
 #if MQTT_USE_TLS_CERTS
 
-#define MQTT_STR(x)                 #x
-#define MQTT_INC_JOIN(a, b)         MQTT_INC_JOIN_IMPL(a, b)
-#define MQTT_INC_JOIN_IMPL(a, b)    a##b
-
-/* .inc files live in TmplUserApp/certificates/ (relative to this .c file) */
-#define MQTT_INC_PATH(file)         MQTT_STR(../../certificates/file)
-
-#define MQTT_INC_ROOTCA             MQTT_INC_JOIN(MQTT_CERT_FILE_PREFIX, _rootCA.inc)
-#define MQTT_INC_CERT               MQTT_INC_JOIN(MQTT_CERT_FILE_PREFIX, _certificate.inc)
-#define MQTT_INC_KEY                MQTT_INC_JOIN(MQTT_CERT_FILE_PREFIX, _private.inc)
-
-#include MQTT_INC_PATH(MQTT_INC_ROOTCA)
-#include MQTT_INC_PATH(MQTT_INC_CERT)
-#include MQTT_INC_PATH(MQTT_INC_KEY)
+/* .inc files live in TmplUserApp/certificates/ (relative to this .c file).
+ * Fixed names — independent of MQTT_CLIENT_ID / MQTT_DEVICE_NAME. */
+#include "../../certificates/mqtt_rootCA.inc"
+#include "../../certificates/mqtt_certificate.inc"
+#include "../../certificates/mqtt_private.inc"
 
 const char *MqttCerts_GetRootCA(void)      { return s_mqtt_root_ca; }
 const char *MqttCerts_GetClientCert(void)  { return s_mqtt_client_cert; }

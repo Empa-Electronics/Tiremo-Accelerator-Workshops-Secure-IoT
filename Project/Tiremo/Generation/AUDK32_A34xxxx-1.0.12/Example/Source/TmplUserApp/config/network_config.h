@@ -1,6 +1,6 @@
 /**
  * @file    network_config.h
- * @brief   WiFi (ESP32) and cellular (EC200) network settings
+ * @brief   WiFi (ESP32) and cellular (SLM320) network settings
  */
 
 #ifndef NETWORK_CONFIG_H
@@ -22,7 +22,7 @@
  * Use 3 for Turkey. Correct time is required for TLS certificate date checks. */
 
 /* =========================================================================
- * Cellular (4G) — used only when EMPA_EC200_4G is enabled
+ * Cellular (4G) — used when EMPA_SLM320_4G is enabled
  * ========================================================================= */
 
 #define CELLULAR_APN                "internet"
@@ -42,6 +42,6 @@
 
 #define CELLULAR_PDP_CONTEXT        1
 /* PDP context number (for AT+QICSGP and AT+QIACT).
- * Usually 1 on EC200. */
+ * Usually 1 on SLM320. */
 
 #endif /* NETWORK_CONFIG_H */

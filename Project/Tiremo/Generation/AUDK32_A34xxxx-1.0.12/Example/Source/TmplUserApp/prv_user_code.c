@@ -22,13 +22,13 @@
 #include "Libraries/ESP32_AT_Test/ESP32_AT_Test.h"
 #include "Libraries/MQTT_Library/EMPA_MqttAws.h"
 #include "Libraries/Sensor/sensor.h"
-#include "Libraries/EC200_4G/EMPA_Ec200.h"
+#include "Libraries/Sensor/sensor_alarm.h"
 #include "config/project_config.h"
+#include "Libraries/MEIG_SLM3XX/EMPA_Slm320.h"
+
 
 extern void MqttPort_ABOV_Init(void);
 extern void MqttPort_ABOV_TickIncrement(void);
-extern void Ec200Port_ABOV_Init(void);
-extern void Ec200Port_ABOV_TickIncrement(void);
 extern void MP23ABS1_TimerHandler(void);
 
 extern uint32_t SystemCoreClock;
@@ -62,8 +62,8 @@ void SysTick_Handler (void)
         }
     }
 
-#if defined(EMPA_EC200_4G)
-    Ec200Port_ABOV_TickIncrement();
+#if defined(EMPA_SLM320_4G)
+    SLM320_TickIncrement();
 #endif
 
     /* Call MP23ABS1 timer handler every 16 ticks (for 1kHz SysTick, this gives ~62.5us per sample) */
@@ -142,9 +142,13 @@ void GPIO_Config_Alt()
     HAL_PCU_SetAltMode(BOARD_LED9_PORT, BOARD_LED9_PIN, PCU_ALT_0);
     HAL_PCU_SetAltMode(BOARD_LED10_PORT, BOARD_LED10_PIN, PCU_ALT_0);
 
-    HAL_PCU_SetAltMode(EC200_PWRKEY_PORT, EC200_PWRKEY_PIN, PCU_ALT_0);
-    HAL_PCU_SetAltMode(EC200_PWR_PORT, EC200_PWR_PIN, PCU_ALT_0);
-    
+#if defined(EMPA_SLM320_4G)
+    HAL_PCU_SetAltMode(SLM320_PWRKEY_PORT, SLM320_PWRKEY_PIN, PCU_ALT_0);
+    HAL_PCU_SetAltMode(SLM320_PWR_PORT, SLM320_PWR_PIN, PCU_ALT_0);
+    HAL_PCU_SetAltMode(BOARD_MODEM_UART_PORT, BOARD_MODEM_UART_RX_PIN, BOARD_MODEM_UART_ALT);
+    HAL_PCU_SetAltMode(BOARD_MODEM_UART_PORT, BOARD_MODEM_UART_TX_PIN, BOARD_MODEM_UART_ALT);
+#endif
+
     /* Configure I2C pins */
     HAL_PCU_SetAltMode(BOARD_I2C_SCL_PORT, BOARD_I2C_SCL_PIN, BOARD_I2C_ALT_FUNCTION);
     HAL_PCU_SetAltMode(BOARD_I2C_SDA_PORT, BOARD_I2C_SDA_PIN, BOARD_I2C_ALT_FUNCTION);
@@ -152,9 +156,6 @@ void GPIO_Config_Alt()
     HAL_PCU_SetAltMode(BOARD_ESP32_UART_PORT, BOARD_ESP32_UART_RX_PIN, BOARD_ESP32_UART_ALT);
     HAL_PCU_SetAltMode(BOARD_ESP32_UART_PORT, BOARD_ESP32_UART_TX_PIN, BOARD_ESP32_UART_ALT);
     HAL_PCU_SetAltMode(BOARD_ESP32_PWR_PORT, BOARD_ESP32_PWR_PIN, PCU_ALT_0);
-
-    HAL_PCU_SetAltMode(BOARD_EC200_UART_PORT, BOARD_EC200_UART_RX_PIN, BOARD_EC200_UART_ALT);
-    HAL_PCU_SetAltMode(BOARD_EC200_UART_PORT, BOARD_EC200_UART_TX_PIN, BOARD_EC200_UART_ALT);
 }
 
 /**********************************************************************
@@ -197,15 +198,14 @@ void PRV_USER_Code(void)
     }
     SYSTICK_Wait(1000);
 
-    /* 4a. EC200 4G Module Init */
-#if defined(EMPA_EC200_4G)
+    /* 4. SLM320 4G Module Init */
+#if defined(EMPA_SLM320_4G)
     DebugFramework_PutsLine("\n\r========================================");
-    DebugFramework_PutsLine("       EC200 4G LTE MODULE INIT");
+    DebugFramework_PutsLine("       SLM320 4G LTE MODULE INIT");
     DebugFramework_PutsLine("========================================\n\r");
 
-    Ec200Port_ABOV_Init();
-    EC200_Init();
-    DebugFramework_PutsLine("[EC200] Driver init OK");
+    SLM320_Init(NULL);
+    DebugFramework_PutsLine("[SLM320] Driver init OK");
 #endif
 
     /* 4. ESP32 AT Test */
@@ -236,15 +236,15 @@ void PRV_USER_Code(void)
         DebugFramework_PutsLine("[MQTT] Will retry each cycle\n\r");
 #endif
 
-    /* 5a. EC200 4G MQTT Connect */
-#if defined(EMPA_EC200_4G)
-    DebugFramework_PutsLine("\n\r[EC200] Starting 4G LTE connection...");
-    uint8_t ec200Connected = (EC200_ConnectBroker() == 0) ? 1 : 0;
-    if (ec200Connected)
-        DebugFramework_PutsLine("[EC200] MQTT broker connected!");
+    /* 5. SLM320 4G MQTT Connect */
+#if defined(EMPA_SLM320_4G)
+    DebugFramework_PutsLine("\n\r[SLM320] Starting 4G LTE connection...");
+    uint8_t slm320Connected = (SLM320_ConnectBroker() == 0) ? 1 : 0;
+    if (slm320Connected)
+        DebugFramework_PutsLine("[SLM320] MQTT broker connected!");
     else
-        DebugFramework_PutsLine("[EC200] MQTT connect failed, will retry next cycle");
-    int ec200_data_count = 1;
+        DebugFramework_PutsLine("[SLM320] MQTT connect failed, will retry next cycle");
+    int slm320_data_count = 1;
 #endif
 
     /* 6. Main Loop */
@@ -253,13 +253,17 @@ void PRV_USER_Code(void)
     int mqtt_data_count = 1;
     while (1)
     {
+        SensorAlarmType_t pendingAlarms[SENSOR_ALARM_MAX_PER_CYCLE];
+        uint8_t pendingAlarmCount = 0U;
+
 #if defined(EMPA_SENSOR_PROCESS)
         DebugFramework_PutsLine("\n\r========================================");
         DebugFramework_Printf("   CYCLE #%lu\n\r", cycle++);
         DebugFramework_PutsLine("========================================");
         SensorData_t *pData = Sensor_ReadAndPrint();
-#elif defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_EC200_4G)
+#elif defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)
         SensorData_t *pData = Sensor_ReadOnly();
+        pendingAlarmCount = Sensor_PollAlarms(pData, pendingAlarms, SENSOR_ALARM_MAX_PER_CYCLE);
 #endif
 
 #if defined(EMPA_ESP32_MQTT_AWS)
@@ -288,29 +292,53 @@ void PRV_USER_Code(void)
         }
 #endif
 
-#if defined(EMPA_EC200_4G)
-        /* --- EC200 4G MQTT Publish --- */
-        if (ec200Connected)
+#if defined(EMPA_SLM320_4G)
+        if (slm320Connected)
         {
-            DebugFramework_PutsLine("[EC200] Sending sensor data...");
-            if (EC200_PublishSensorDataApp(pData) == 0)
+            DebugFramework_PutsLine("[SLM320] Sending sensor data...");
+            if (SLM320_PublishSensorDataApp(pData) == 0)
             {
-                DebugFramework_Printf("[EC200] Data sent! #%d\n\r", ec200_data_count++);
+                DebugFramework_Printf("[SLM320] Data sent! #%d\n\r", slm320_data_count++);
             }
             else
             {
-                DebugFramework_PutsLine("[EC200] Data send failed!");
-                ec200Connected = 0;
+                DebugFramework_PutsLine("[SLM320] Data send failed!");
+                slm320Connected = 0;
             }
         }
         else
         {
-            DebugFramework_PutsLine("[EC200] Not connected, reconnecting...");
-            ec200Connected = (EC200_ConnectBroker() == 0) ? 1 : 0;
-            if (ec200Connected)
+            DebugFramework_PutsLine("[SLM320] Not connected, reconnecting...");
+            slm320Connected = (SLM320_ConnectBroker() == 0) ? 1 : 0;
+            if (slm320Connected)
             {
-                DebugFramework_PutsLine("[EC200] Reconnected successfully!");
-                EC200_PublishSensorData(MQTT_TOPIC_PUB, "reconnect_test");
+                DebugFramework_PutsLine("[SLM320] Reconnected successfully!");
+                SLM320_PublishSensorData(MQTT_TOPIC_PUB, "reconnect_test");
+            }
+        }
+#endif
+
+#if defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)
+        if (pendingAlarmCount > 0U)
+        {
+            char alarmBuf[160];
+            uint8_t ai;
+
+            for (ai = 0U; ai < pendingAlarmCount; ai++)
+            {
+                if (Sensor_FormatAlarmJSON(pendingAlarms[ai], pData,
+                                           alarmBuf, sizeof(alarmBuf)) == 0U)
+                    continue;
+
+#if defined(EMPA_ESP32_MQTT_AWS)
+                if (mqttConnected)
+                    MQTT_PublishAlarm(alarmBuf);
+#endif
+
+#if defined(EMPA_SLM320_4G)
+                if (slm320Connected)
+                    (void)SLM320_PublishAlarm(alarmBuf);
+#endif
             }
         }
 #endif

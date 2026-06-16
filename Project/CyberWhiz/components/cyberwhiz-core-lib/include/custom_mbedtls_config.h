@@ -1,0 +1,24 @@
+// #ifndef CUSTOM_MBEDTLS_CONFIG_H
+// #define CUSTOM_MBEDTLS_CONFIG_H
+
+// #ifndef MBEDTLS_ECDSA_SIGN_ALT
+// #define MBEDTLS_ECDSA_SIGN_ALT
+// #endif
+
+// #ifndef MBEDTLS_ECDH_COMPUTE_SHARED_ALT
+// #define MBEDTLS_ECDH_COMPUTE_SHARED_ALT
+// #endif
+
+// #ifndef MBEDTLS_ECDSA_VERIFY_ALT
+// #define MBEDTLS_ECDSA_VERIFY_ALT
+// #endif
+
+// #ifndef MBEDTLS_ECDH_GEN_PUBLIC_ALT
+// #define MBEDTLS_ECDH_GEN_PUBLIC_ALT
+// #endif
+
+// #ifndef MBEDTLS_ENTROPY_HARDWARE_ALT
+// #define MBEDTLS_ENTROPY_HARDWARE_ALT
+// // #endif
+
+// #endif // CUSTOM_MBEDTLS_CONFIG_H

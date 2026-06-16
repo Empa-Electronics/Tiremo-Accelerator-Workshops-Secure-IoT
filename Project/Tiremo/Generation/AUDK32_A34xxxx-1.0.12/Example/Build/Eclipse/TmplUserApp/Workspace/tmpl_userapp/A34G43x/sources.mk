@@ -50,9 +50,9 @@ HAL/VREFBUF \
 HAL/WDT \
 Main/Libraries/BatteryReading \
 Main/Libraries/DebugLibrary \
-Main/Libraries/EC200_4G \
 Main/Libraries/ESP32_AT_Test \
 Main/Libraries/LISDE12TR \
+Main/Libraries/MEIG_SLM3XX \
 Main/Libraries/MP23ABS1 \
 Main/Libraries/MQTT_Library \
 Main/Libraries/SHT40 \

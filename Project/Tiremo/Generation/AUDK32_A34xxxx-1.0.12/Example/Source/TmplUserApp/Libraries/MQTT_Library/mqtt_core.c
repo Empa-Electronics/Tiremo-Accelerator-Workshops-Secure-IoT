@@ -542,8 +542,10 @@ FUNC_StatusTypeDef Wifi_MqttCertsUpload2(char *buffer, MQTT_DataRecvModeTypeDef 
 #if MQTT_USE_TLS_CERTS
     FUNC_StatusTypeDef status;
 
+    /* ESP-AT MQTT PKI: namespace and key names must match (mqtt_ca/mqtt_cert/mqtt_key).
+     * Wrong keys like mqtt_ca.0 are for SSL client_cert, not MQTT. */
     MQTT_DBG("[MQTT] Uploading CA cert...\r\n");
-    status = wifi_sysmfg_write_binary(buffer, "mqtt_ca", "mqtt_ca.0",
+    status = wifi_sysmfg_write_binary(buffer, "mqtt_ca", "mqtt_ca",
                                       MqttCerts_GetRootCA(), (uint16_t)MqttCerts_GetRootCALen(), mode);
     if (status != FUNC_OK) {
         MQTT_DBG("[MQTT] CA cert upload failed\r\n");
@@ -551,7 +553,7 @@ FUNC_StatusTypeDef Wifi_MqttCertsUpload2(char *buffer, MQTT_DataRecvModeTypeDef 
     }
 
     MQTT_DBG("[MQTT] Uploading client cert...\r\n");
-    status = wifi_sysmfg_write_binary(buffer, "mqtt_cert", "mqtt_cert.0",
+    status = wifi_sysmfg_write_binary(buffer, "mqtt_cert", "mqtt_cert",
                                       MqttCerts_GetClientCert(), (uint16_t)MqttCerts_GetClientCertLen(), mode);
     if (status != FUNC_OK) {
         MQTT_DBG("[MQTT] Client cert upload failed\r\n");
@@ -559,7 +561,7 @@ FUNC_StatusTypeDef Wifi_MqttCertsUpload2(char *buffer, MQTT_DataRecvModeTypeDef 
     }
 
     MQTT_DBG("[MQTT] Uploading private key...\r\n");
-    status = wifi_sysmfg_write_binary(buffer, "mqtt_key", "mqtt_key.0",
+    status = wifi_sysmfg_write_binary(buffer, "mqtt_key", "mqtt_key",
                                       MqttCerts_GetPrivateKey(), (uint16_t)MqttCerts_GetPrivateKeyLen(), mode);
     if (status != FUNC_OK) {
         MQTT_DBG("[MQTT] Private key upload failed\r\n");

@@ -15,6 +15,7 @@ This guide walks you through downloading the Tiremo® Accelerator Workshops repo
    - [Select Workspace](#32-select-workspace)
    - [Import the Project](#33-import-the-project)
    - [Select Project Directory](#34-select-project-directory)
+   - [Configure Device Name](#35-configure-device-name)
 4. [Build and Flash via IDE](#4-build-and-flash-via-ide)
 5. [Flash via Binary (aFlasher32)](#5-flash-via-binary-aflasher32)
 6. [View Debug Messages (Tera Term)](#6-view-debug-messages-tera-term)
@@ -86,6 +87,36 @@ Project\Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Build\Eclipse\TmplUserAp
 Click **Finish** to import the project.
 
 ![Click Finish](../Document/RunningCode/image6.png)
+
+### 3.5 Configure Device Name
+
+After the project is open, open the MQTT device configuration file:
+
+```
+..\Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Source\TmplUserApp\config\mqtt_device_config.h
+```
+
+Relative to the extracted `Project` folder, the full path is:
+
+```
+Project\Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Source\TmplUserApp\config\mqtt_device_config.h
+```
+
+Find the device name definition:
+
+```c
+#define MQTT_DEVICE_NAME            "hun1"
+```
+
+Replace the `1` with **your own participant number**. For example, if you are participant **5**, set:
+
+```c
+#define MQTT_DEVICE_NAME            "hun5"
+```
+
+Each board must have a unique device name so it can connect to the MQTT broker without conflicting with other participants.
+
+Save the file before building the project.
 
 ---
 

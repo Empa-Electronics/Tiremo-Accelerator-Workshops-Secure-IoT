@@ -1,4 +1,5 @@
 #include "sensor.h"
+#include "sensor_alarm.h"
 #include "../../config/board_config.h"
 #include "../DebugLibrary/debug_framework.h"
 #include "../SHT40/SHT40_app.h"
@@ -316,5 +317,161 @@ uint16_t Sensor_FormatJSON(const SensorData_t *pData, char *outBuf, uint16_t buf
         (unsigned long)pData->mic_rms);
 
     if (n < 0 || n >= (int)bufLen) n = bufLen - 1;
+    return (uint16_t)n;
+}
+
+/*-------------------------------------------------------------------*/
+/* Alarm detection (linked via sensor.c — no separate build entry)    */
+/*-------------------------------------------------------------------*/
+
+static uint8_t s_tempAbove = 0U;
+static uint8_t s_fallActive = 0U;
+static uint8_t s_soundAbove = 0U;
+
+uint8_t Sensor_PollAlarms(const SensorData_t *pData,
+                          SensorAlarmType_t *pOut,
+                          uint8_t maxOut)
+{
+    uint8_t count = 0U;
+
+    if (pData == NULL || pOut == NULL || maxOut == 0U)
+        return 0U;
+
+    if (pData->sht40_ok)
+    {
+        if (pData->temperature_mC > SENSOR_ALARM_TEMP_THRESHOLD_MC)
+        {
+            if (!s_tempAbove)
+            {
+                s_tempAbove = 1U;
+                if (count < maxOut)
+                    pOut[count++] = SENSOR_ALARM_TEMP_HIGH;
+            }
+        }
+        else if (s_tempAbove)
+        {
+            s_tempAbove = 0U;
+            if (count < maxOut)
+                pOut[count++] = SENSOR_ALARM_TEMP_NORMAL;
+        }
+    }
+
+    if (pData->lis2de12_ok)
+    {
+        /* Only downward: Z <= 1000 - 300 mg */
+        if (pData->accel_z_mg <= SENSOR_ALARM_FALL_Z_MAX_MG)
+        {
+            if (!s_fallActive)
+            {
+                s_fallActive = 1U;
+                if (count < maxOut)
+                    pOut[count++] = SENSOR_ALARM_FALL;
+            }
+        }
+        else if (s_fallActive)
+        {
+            s_fallActive = 0U;
+            if (count < maxOut)
+                pOut[count++] = SENSOR_ALARM_FALL_NORMAL;
+        }
+    }
+
+    if (pData->mic_ok)
+    {
+        if (pData->mic_rms > SENSOR_ALARM_MIC_RMS_THRESHOLD)
+        {
+            if (!s_soundAbove)
+            {
+                s_soundAbove = 1U;
+                if (count < maxOut)
+                    pOut[count++] = SENSOR_ALARM_LOUD_SOUND;
+            }
+        }
+        else if (s_soundAbove)
+        {
+            s_soundAbove = 0U;
+            if (count < maxOut)
+                pOut[count++] = SENSOR_ALARM_SOUND_NORMAL;
+        }
+    }
+
+    return count;
+}
+
+uint16_t Sensor_FormatAlarmJSON(SensorAlarmType_t alarm,
+                                const SensorData_t *pData,
+                                char *outBuf,
+                                uint16_t bufLen)
+{
+    int n;
+
+    if (pData == NULL || outBuf == NULL || bufLen == 0U)
+        return 0U;
+
+    switch (alarm)
+    {
+    case SENSOR_ALARM_TEMP_HIGH:
+    {
+        long temp_int = (long)(pData->temperature_mC / 1000);
+        unsigned long temp_frac = (unsigned long)(
+            pData->temperature_mC >= 0
+                ? (pData->temperature_mC % 1000)
+                : ((-pData->temperature_mC) % 1000));
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"TEMPERATURE_HIGH\",\"severity\":\"MAJOR\","
+                     "\"code\":\"Temp_HIGH\",\"exception\":\"temp: %ld.%02lu\"}",
+                     temp_int, temp_frac / 10U);
+        break;
+    }
+
+    case SENSOR_ALARM_TEMP_NORMAL:
+    {
+        long temp_int = (long)(pData->temperature_mC / 1000);
+        unsigned long temp_frac = (unsigned long)(
+            pData->temperature_mC >= 0
+                ? (pData->temperature_mC % 1000)
+                : ((-pData->temperature_mC) % 1000));
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"TEMPERATURE_NORMAL\",\"severity\":\"INFO\","
+                     "\"code\":\"Temp_NORMAL\",\"exception\":\"temp: %ld.%02lu\"}",
+                     temp_int, temp_frac / 10U);
+        break;
+    }
+
+    case SENSOR_ALARM_FALL:
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"FALL_DETECTED\",\"severity\":\"MAJOR\","
+                     "\"code\":\"Fall_DETECTED\",\"exception\":\"az: %d\"}",
+                     (int)pData->accel_z_mg);
+        break;
+
+    case SENSOR_ALARM_FALL_NORMAL:
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"FALL_NORMAL\",\"severity\":\"INFO\","
+                     "\"code\":\"Fall_NORMAL\",\"exception\":\"az: %d\"}",
+                     (int)pData->accel_z_mg);
+        break;
+
+    case SENSOR_ALARM_LOUD_SOUND:
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"LOUD_SOUND\",\"severity\":\"MAJOR\","
+                     "\"code\":\"Sound_HIGH\",\"exception\":\"mic_rms: %lu\"}",
+                     (unsigned long)pData->mic_rms);
+        break;
+
+    case SENSOR_ALARM_SOUND_NORMAL:
+        n = snprintf(outBuf, bufLen,
+                     "{\"alarmType\":\"SOUND_NORMAL\",\"severity\":\"INFO\","
+                     "\"code\":\"Sound_NORMAL\",\"exception\":\"mic_rms: %lu\"}",
+                     (unsigned long)pData->mic_rms);
+        break;
+
+    default:
+        return 0U;
+    }
+
+    if (n < 0 || n >= (int)bufLen)
+        return 0U;
+
     return (uint16_t)n;
 }

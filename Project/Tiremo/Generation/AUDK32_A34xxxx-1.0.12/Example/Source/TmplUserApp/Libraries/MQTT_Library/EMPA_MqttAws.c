@@ -65,6 +65,17 @@ void MQTT_PublishSensorData(const SensorData_t *pData)
         (uint16_t)strlen(jsonBuf), jsonBuf, QOS_0, RTN_0, POLLING_MODE);
 }
 
+void MQTT_PublishAlarm(const char *jsonPayload)
+{
+    if (jsonPayload == NULL)
+        return;
+
+    memset(mqttPacketBuffer, 0, MQTT_DATA_PACKET_BUFF_SIZE);
+    LED_MqttTXBlink();
+    Wifi_MqttPubRaw2(mqttPacketBuffer, MQTT_TOPIC_ALARM,
+        (uint16_t)strlen(jsonPayload), jsonPayload, QOS_0, RTN_0, POLLING_MODE);
+}
+
 void MY_MqttAwsProcess(void)
 {
     if (MQTT_ConnectBroker() == 0)

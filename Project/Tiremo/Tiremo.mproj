@@ -37,9 +37,9 @@ PROJECT_TARGET_APP:
   prmAppType: ACM_USERAPP_TYPE_TMPL_USER_APP
   prmAppName: tmpl_userapp
   prmPeriList:
-  - UART
-  - Timer1
   - I2C
+  - Timer1
+  - UART
   - ADC
   prmAppUpdateComplete: true
 

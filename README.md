@@ -1,4 +1,4 @@
-# Welcome to Tiremo® Accelerator Workshops!
+# Welcome to Tiremo® Accelerator Workshop!
 
 **Hello!**  
 Welcome to the **Tiremo® Accelerator Workshops** series organized by Empa Electronics. This open-source repository is shared with you so you can obtain everything you need for the workshop and follow along with the activities easily.
