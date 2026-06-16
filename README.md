@@ -35,9 +35,10 @@ Three workshop applications are included: sensor readout to terminal, ESP32 WiFi
 
 Firmware details: [Project/README.md](Project/README.md)
 
-### ↳  2) CyberWhiz — Secure IoT on ESP32
+### ↳  2) CyberWhiz — Secure IoT on ESP32  
 
-ESP-IDF project on **ESP32**: WiFi connection, TLS MQTT, and periodic **Secure Mercek** security telemetry to the cloud. Open `Project/CyberWhiz/` in VS Code with the ESP-IDF extension.
+ESP-IDF project on **ESP32**: WiFi connection, TLS MQTT, and periodic **Secure Mercek** security telemetry to the cloud. Open `Project/CyberWhiz/` in VS Code with the ESP-IDF extension.  
+
 ---
 
 <p align="center">
