@@ -91,6 +91,21 @@ Click **Finish** to import the project.
 
 ![Click Finish](../Document/RunningCode/image6.png)
 
+After import, run **Project → Clean…** (select the **A34G43x** configuration), then **Project → Build Project** once before flashing. This regenerates local build files for your PC.
+
+> **Build error: `Program "make" not found in PATH`**
+>
+> eMStudio32 uses GNU **make** from its bundled **xpack-windows-build-tools**. This error means `make.exe` is missing or not on the build PATH — usually because eMStudio32 was not fully installed, or the IDE was not started from the official **eMStudio32** shortcut.
+>
+> 1. Close eMStudio32.
+> 2. Confirm this file exists (path may vary slightly by version):
+>    `C:\Program Files (x86)\ABOV\eMStudio32\bin\xpack-windows-build-tools-*\bin\make.exe`
+>    or `C:\ABOV\eMStudio32\bin\xpack-windows-build-tools-*\bin\make.exe`
+> 3. If missing, **repair or reinstall** eMStudio32 using the [installation guide](../SetUp.md#1-emstudio32-installation).
+> 4. Start eMStudio32 from the Start Menu shortcut, re-import the project, then **Clean + Build**.
+>
+> See also [SetUp.md — eMStudio32 build troubleshooting](../SetUp.md#emstudio32-build-troubleshooting).
+
 ### 3.5 Configure Device Name
 
 > **Do this before loading or flashing any code** — especially for Application 2 and Application 3.

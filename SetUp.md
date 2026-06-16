@@ -75,6 +75,27 @@ eMStudio32 is an integrated development environment (IDE) for ABOV microcontroll
 1. Go to the official download page above and download the installer.
 2. Run the downloaded installer.
 3. Follow the steps in the [installation documentation](https://abov.atlassian.net/wiki/spaces/ES2/pages/1752858627/Installation) to complete setup.
+4. **Launch eMStudio32 from the Start Menu / desktop shortcut** created by the installer — do not open the project folder with a generic Eclipse install.
+5. After installation, confirm that **Windows Build Tools** (`make.exe`) are present, for example:
+
+   ```
+   <eMStudio32 install>\bin\xpack-windows-build-tools-*\bin\make.exe
+   ```
+
+   Typical install locations:
+
+   - `C:\ABOV\eMStudio32\`
+   - `C:\Program Files (x86)\ABOV\eMStudio32\`
+
+### eMStudio32 build troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Program "make" not found in PATH` | eMStudio32 build tools not installed, incomplete install, or IDE started outside the official launcher | Repair/reinstall eMStudio32; start from the **eMStudio32** shortcut; verify `make.exe` exists under `bin\xpack-windows-build-tools-*\bin\` |
+| PATH shows `C:\ABOV\eMStudio32\...` but IDE is under `Program Files (x86)` | Toolchain path mismatch from a copied workspace or partial install | Reinstall to one location, or add the correct `xpack-windows-build-tools-*\bin` folder to Windows **PATH** |
+| `ld.exe: unrecognized option '--no-warn-rwx-segment'` | Linker flag needs GCC 12+; eMStudio32 ships **GCC 10.3** | Use the workshop repo as-is (flag removed); run **Project → Clean…** then **Build** |
+
+> **Workshop note:** The Tiremo Eclipse project is tested with the **GNU Arm Embedded Toolchain bundled in eMStudio32 (GCC 10.3, 2021.10)**. Do not add linker flags that require a newer GCC unless every participant uses the same upgraded toolchain.
 
 ---
 

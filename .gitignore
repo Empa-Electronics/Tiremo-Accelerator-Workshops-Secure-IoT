@@ -1,0 +1,11 @@
+# Tiremo / eMStudio32 — GCC build outputs (regenerated on Clean + Build)
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.o
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.d
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.elf
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.map
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.bin
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.hex
+Project/Tiremo/Generation/**/tmpl_userapp/A34G43x/**/*.list
+
+# Eclipse workspace metadata (machine-specific; do not commit)
+Project/Tiremo/Generation/**/TmplUserApp/Workspace/.metadata/
