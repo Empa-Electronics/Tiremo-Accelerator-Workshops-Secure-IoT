@@ -257,11 +257,11 @@ void PRV_USER_Code(void)
 #else
         if (MqttCertProv_Run(NULL, 0U) != 0)
 #endif
-            DebugFramework_PutsLine("[CERT] Kurulum basarisiz — MQTT denenecek");
+            DebugFramework_PutsLine("[CERT] Provisioning failed — will try MQTT anyway");
     }
     else
     {
-        DebugFramework_PutsLine("[CERT] ABOV'da sertifika yok");
+        DebugFramework_PutsLine("[CERT] No certificates on ABOV");
         MqttCerts_LogFlashIfPresent();
     }
 #endif

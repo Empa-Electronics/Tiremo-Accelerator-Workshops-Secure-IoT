@@ -204,7 +204,7 @@ int MqttCerts_EraseFlash(void)
     }
 
     DebugFramework_Printf(
-        "[CERT] Flash siliniyor: 0x%08X - 0x%08X\n\r",
+        "[CERT] Erasing flash: 0x%08X - 0x%08X\n\r",
         (unsigned int)start, (unsigned int)end);
 
     for (addr = start; addr < end; addr += CERT_PAGE_SIZE)
@@ -212,13 +212,13 @@ int MqttCerts_EraseFlash(void)
         if (cert_fmc_erase_page(addr) != 0)
         {
             DebugFramework_Printf(
-                "[CERT] Sayfa silme hatasi @0x%08X\n\r",
+                "[CERT] Page erase failed @0x%08X\n\r",
                 (unsigned int)addr);
             return -1;
         }
     }
 
-    DebugFramework_PutsLine("[CERT] Flash sertifikalari kalici olarak silindi");
+    DebugFramework_PutsLine("[CERT] Flash certificates permanently erased");
     return 0;
 }
 

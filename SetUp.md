@@ -151,116 +151,41 @@ Tera Term is a terminal emulator used to communicate with **Tiremo®Cortex** ove
 
 ---
 
-## 5. Visual Studio Code Installation
+## 5. ESP-IDF Installation
 
-Visual Studio Code is the recommended code editor for ESP32 development in this workshop.
+1. Download ESP-IDF v5.3 from https://github.com/espressif/idf-installer/releases/download/offline-5.3/esp-idf-tools-setup-offline-5.3.exe
 
-**Download:** [https://code.visualstudio.com/download](https://code.visualstudio.com/download)
+2. Run 'esp-idf-tools-setup-offline-5.3.exe'
 
-![VS Code download page](Document/VSCode/VSCode_image1.png)
+3. ![Language selection](Document/ESP-IDF/ESP-IDF-Offline-image1.png)
 
-**Installation by operating system:**
-- **Windows:** Download and run the `.exe` installer.
-- **macOS:** Download the `.dmg` file and drag VS Code into the Applications folder.
-- **Linux:** Use the `.deb` (Debian/Ubuntu) or `.rpm` (Fedora/RHEL) package.
+4. ![Accept Agreement](Document/ESP-IDF/ESP-IDF-Offline-image2.png)
 
----
+5. ![Pre-Installation Check](Document/ESP-IDF/ESP-IDF-Offline-image3.png)
 
-## 6. ESP-IDF Extension Setup (Recommended)
+Press Apply Fixes if any.
 
-After installing VS Code, install the **ESP-IDF** extension to set up the ESP32 development environment.
+6. ![Setup Path](Document/ESP-IDF/ESP-IDF-Offline-image4.png)
 
-### Install the Extension
+7. ![Select Components](Document/ESP-IDF/ESP-IDF-Offline-image5.png)
 
-1. Open VS Code.
-2. Click the **Extensions** icon on the left (or press `Ctrl+Shift+X` / `Cmd+Shift+X`).
-3. Search for **"ESP-IDF"**.
-4. Find **Espressif IDF** and click **Install**.
+8. ![Ready to Install](Document/ESP-IDF/ESP-IDF-Offline-image6.png)
 
-**Extension link:** [ESP-IDF Extension](https://marketplace.visualstudio.com/items?itemName=espressif.esp-idf-extension)
+9. ![Installing](Document/ESP-IDF/ESP-IDF-Offline-image7.png)
 
-> **Tip:** After the extension is installed, you can install ESP-IDF automatically or use an existing installation.
+10. ![Complete](Document/ESP-IDF/ESP-IDF-Offline-image8.png)  
 
-### Configure the Extension
+11. Go into the directory you downloaded Espressif files.
 
-**Method 1 — Automatic redirect**
-- After installation, VS Code may automatically open the ESP-IDF configuration page.
+12. run cmd under <setup path>\frameworks\esp-idf-v5.3, by default it is C:\Espressif\frameworks\esp-idf-v5.3
 
-**Method 2 — Manual**
-1. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS).
-2. Type and select:
-   ```
-   ESP-IDF: Configure ESP-IDF Extension
-   ```
-3. Press Enter to open the setup page.
+13. Inside the terminal run install.bat
 
-![Open ESP-IDF configuration page](Document/VSCode/VSCode_image2.png)
+14. After that run export.bat
 
-**Setup options:**
-- **Express:** Quick installation (recommended for beginners)
-- **Advanced:** Custom installation (use an existing setup or choose a different version)
+15. Once these are completed, your terminal is ready to play with ESP projects.
 
-![ESP-IDF setup options](Document/VSCode/VSCode_image3.png)
-
-### Workshop Settings
-
-Use the following settings for this workshop:
-
-1. **Installation method:** Express
-2. **ESP-IDF version:** v5.3
-
-![Select ESP-IDF v5.3 with Express setup](Document/VSCode/VSCode_image4.png)
-
-> **Important:** When installing ESP-IDF, choose an installation path that does **not** contain non-ASCII characters (e.g. Turkish letters ü, ö, ş, ı, ğ, ç). Example: `C:\esp` or `C:\Users\YourName\esp`
-
-**Installation steps:**
-
-1. Confirm **ESP-IDF v5.3** is selected on the setup screen.
-2. Click **Install**.
-3. Wait for the installation to complete (this may take several minutes).
-4. When finished, the extension is ready to use.
-
-![Start ESP-IDF installation](Document/VSCode/VSCode_image5.png)
-
-> **Tip:** Required tools and libraries are downloaded automatically during installation. Make sure you have a stable internet connection.
-
----
-
-## 7. Alternative ESP-IDF Installation Methods
-
-If you prefer not to use the VS Code extension, you can install ESP-IDF using one of the methods below.
-
-### 7.1 Windows
-
-Download **Universal Online Installer 2.4.0** from [https://dl.espressif.com/dl/esp-idf/](https://dl.espressif.com/dl/esp-idf/).
-
-![Windows installer download](Document/ESP-IDF/ESP-IDF_image1.png)
-
-![Language selection](Document/ESP-IDF/ESP-IDF_image2.png)
-
-![Installation progress](Document/ESP-IDF/ESP-IDF_image3.png)
-
-![Pre-install check](Document/ESP-IDF/ESP-IDF_image4.png)
-
-![ESP-IDF source selection](Document/ESP-IDF/ESP-IDF_image5.png)
-
-![ESP-IDF version selection](Document/ESP-IDF/ESP-IDF_image6.png)
-
-Select **ESP-IDF v5.3**.
-
-![ESP-IDF installation path](Document/ESP-IDF/ESP-IDF_image7.png)
-
-![ESP-IDF component selection](Document/ESP-IDF/ESP-IDF_image8.png)
-
-![Ready to install ESP-IDF](Document/ESP-IDF/ESP-IDF_image9.png)
-
-![ESP-IDF installing](Document/ESP-IDF/ESP-IDF_image10.png)
-
-This step may take a while while required ESP libraries are downloaded.
-
-![ESP-IDF installation complete](Document/ESP-IDF/ESP-IDF_image11.png)
-
-When installation finishes, a terminal opens for ESP projects. Navigate to the project folder and run `idf.py build` to compile the firmware.
+16. Change directory to the Workshop project that you have cloned.
 
 ### 7.2 macOS / Linux
 

@@ -57,11 +57,10 @@
  * TLS CERTIFICATES (fixed file names — not tied to client ID)
  * =========================================================================
  *
- * Place PEM sources under certificates/:
- *   mqtt_rootCA.pem
- *   mqtt_certificate.pem
- *   mqtt_private.key
- * Regenerate matching .inc files for the build (mqtt_certs.c includes them).
+ * PEM data lives in certificates/ as .inc sources (included by mqtt_certs.c):
+ *   mqtt_rootCA.inc
+ *   mqtt_certificate.inc
+ *   mqtt_private.inc
  * Change MQTT_USER_ID / MQTT_DEVICE_NAME freely; cert files stay the same.
  */
 

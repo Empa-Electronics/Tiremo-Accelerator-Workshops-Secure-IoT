@@ -10,11 +10,11 @@
  * FEATURE FLAGS — enable features by uncommenting
  * ========================================================================= */
 
-//#define EMPA_SENSOR_PROCESS
+#define EMPA_SENSOR_PROCESS
 /* When enabled: print sensor data to debug UART (no MQTT publish).
  * When disabled: no terminal output, read-only. */
 
-#define EMPA_ESP32_MQTT_AWS
+//#define EMPA_ESP32_MQTT_AWS
 /* When enabled: WiFi + MQTT connection via ESP32-C3.
  * WiFi settings in network_config.h, broker settings in mqtt_device_config.h */
 

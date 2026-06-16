@@ -22,7 +22,7 @@ extern void SYSTICK_Wait(uint32_t un32TimeMS);
 
 static void prov_wait_long_press(void)
 {
-    DebugFramework_PutsLine("[CERT] ABOV sertifikalari silmek icin butona 3+ saniye basin");
+    DebugFramework_PutsLine("[CERT] Press button for 3+ seconds to erase ABOV certificates");
 
     while (1)
     {
@@ -42,46 +42,46 @@ int MqttCertProv_Run(char *buffer, uint16_t bufSize)
 #if defined(EMPA_ESP32_MQTT_AWS)
     (void)bufSize;
 
-    DebugFramework_PutsLine("[CERT] ABOV sertifikalari ESP32'ye yukleniyor...");
+    DebugFramework_PutsLine("[CERT] Uploading ABOV certificates to ESP32...");
     if (Wifi_MqttCertsUpload2(buffer, POLLING_MODE) != FUNC_OK)
     {
-        DebugFramework_PutsLine("[CERT] ESP32 yukleme basarisiz");
+        DebugFramework_PutsLine("[CERT] ESP32 upload failed");
         return -1;
     }
-    DebugFramework_PutsLine("[CERT] ESP32 yukleme tamam");
+    DebugFramework_PutsLine("[CERT] ESP32 upload complete");
 #endif
 
 #if defined(EMPA_SLM320_4G)
     (void)buffer;
     (void)bufSize;
 
-    DebugFramework_PutsLine("[CERT] ABOV sertifikalari SLM320'ye yukleniyor...");
+    DebugFramework_PutsLine("[CERT] Uploading ABOV certificates to SLM320...");
     if (SLM320_BootstrapAt() == 0U)
     {
-        DebugFramework_PutsLine("[CERT] SLM320 AT hazir degil");
+        DebugFramework_PutsLine("[CERT] SLM320 AT not ready");
         return -1;
     }
     if (SLM320_CertsUploadAll() == 0U)
     {
-        DebugFramework_PutsLine("[CERT] SLM320 yukleme basarisiz");
+        DebugFramework_PutsLine("[CERT] SLM320 upload failed");
         return -1;
     }
-    DebugFramework_PutsLine("[CERT] SLM320 yukleme tamam");
+    DebugFramework_PutsLine("[CERT] SLM320 upload complete");
 #endif
 
-    DebugFramework_PutsLine("\n\r[CERT] --- ONCESI ---");
-    MqttCerts_LogStorage("ONCESI");
+    DebugFramework_PutsLine("\n\r[CERT] --- BEFORE ---");
+    MqttCerts_LogStorage("BEFORE");
 
     prov_wait_long_press();
 
     if (MqttCerts_EraseFlash() != 0)
     {
-        DebugFramework_PutsLine("[CERT] Flash silme hatasi!");
+        DebugFramework_PutsLine("[CERT] Flash erase failed!");
         return -1;
     }
 
-    DebugFramework_PutsLine("\n\r[CERT] --- SONRASI ---");
-    MqttCerts_LogStorage("SONRASI");
+    DebugFramework_PutsLine("\n\r[CERT] --- AFTER ---");
+    MqttCerts_LogStorage("AFTER");
 
 #if defined(EMPA_SLM320_4G)
     /* Clear modem state after cert UFS upload + flash erase so connect

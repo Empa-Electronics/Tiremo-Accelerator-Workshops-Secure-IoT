@@ -207,8 +207,8 @@ sequenceDiagram
 ### WiFi settings (`network_config.h`)
 
 ```c
-#define WIFI_SSID       "EMPA_Arge"
-#define WIFI_PASSWORD   "Emp@Arg2024!"
+#define WIFI_SSID       "EMPA_ARGE_4G"
+#define WIFI_PASSWORD   "Empa1982"
 #define WIFI_TIMEZONE   3
 ```
 

@@ -1,20 +1,25 @@
-# Welcome to Tiremo® Accelerator Workshop!
+<div align="center">
+  <img src="Document/banner3.jpg" alt="Tiremo IoT Cybersecurity Workshop Banner" width="100%">
+</div>  
 
-**Hello!**  
-Welcome to the **Tiremo® Accelerator Workshops** series organized by Empa Electronics. This open-source repository is shared with you so you can obtain everything you need for the workshop and follow along with the activities easily.
+
+# Tiremo® Accelerator Workshops — Secure IoT
+
+Welcome to the **Tiremo® Accelerator Workshops** by **Empa Electronics**. This repository contains firmware source, pre-built binaries, and step-by-step guides for the hands-on workshop.
 
 ---
 
 ## About Tiremo
 
-> **[To be completed]**  
-> Product introduction for the board (technical specifications, hardware descriptions, images, etc.) will be added to this section.
+**Tiremo** is a development board designed by Empa Electronics for Edge AI and cloud-IoT applications, delivered with full software support. At its core is the high-performance **ABOV A34G43ARL2N** microcontroller (ARM® Cortex®-M4F), together with an onboard debugger that simplifies your development workflow. The board includes an analog MEMS microphone, a 3-axis accelerometer, and temperature/humidity sensors for environmental monitoring. Ten user LEDs and a user button let you build rich visual interactions; a Wi-Fi and Bluetooth LE module connects your data to the cloud or to other devices. In this workshop, sensor data is sent to the **Tiremo MQTT broker** (`iot.tiremo.ai`) over Wi-Fi or 4G LTE. Connect via **USB Type-C (CN6)** for power, flashing, and serial debug.
+
+Sensors convert physical events into electronic signals that can be analyzed at the edge or in the cloud. Lightweight protocols such as **MQTT** carry sensor data reliably with low bandwidth. Cloud IoT platforms collect, store, and visualize this data in a central system — enabling low-latency, energy-efficient applications when the right sensors and connectivity are chosen at the edge.
 
 ---
 
 ## Development Environment Setup
 
-Before starting the activity, prepare your development environment by following the setup guide below.
+Before starting, install the required tools (eMStudio32, aFlasher32, Tera Term, etc.):
 
 ### ↳ [Development Environment Setup](SetUp.md)
 
@@ -22,12 +27,17 @@ Before starting the activity, prepare your development environment by following 
 
 ## Workshop Activities
 
-The workshop activities use **Tiremo®Cortex** in an interactive, hands-on format. Required workspaces and setup steps are listed under each activity heading. After completing the development environment setup, proceed to the activities below.
+After setup, follow the activity guide to open the project, select an application, build, and flash the **Tiremo** board:
 
-### ↳ [1) Data Collection and MQTT Communication with Tiremo®Cortex](Project/RunningCode.md)
+### ↳ [1) Data Collection and MQTT Communication with Tiremo](Project/RunningCode.md)
 
-Covers the development steps for streaming data created with Tiremo®Cortex and processing it in the cloud via the MQTT protocol.
+Three workshop applications are included: sensor readout to terminal, ESP32 WiFi MQTT, and SLM320 4G MQTT.
 
+Firmware details: [Project/README.md](Project/README.md)
+
+### ↳  2) CyberWhiz — Secure IoT on ESP32
+
+ESP-IDF project on **ESP32**: WiFi connection, TLS MQTT, and periodic **Secure Mercek** security telemetry to the cloud. Open `Project/CyberWhiz/` in VS Code with the ESP-IDF extension.
 ---
 
 <p align="center">
