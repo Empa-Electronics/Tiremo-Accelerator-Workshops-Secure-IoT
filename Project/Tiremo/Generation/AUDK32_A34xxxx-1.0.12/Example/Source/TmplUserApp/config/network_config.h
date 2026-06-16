@@ -10,11 +10,11 @@
  * WiFi — used only when EMPA_ESP32_MQTT_AWS is enabled
  * ========================================================================= */
 
-#define WIFI_SSID                   "EMPA_Arge"
+#define WIFI_SSID                   "EMPA_ARGE_4G"
 /* WiFi network name (SSID).
  * ESP32 connects via AT+CWJAP. */
 
-#define WIFI_PASSWORD               "Emp@Arg2024!"
+#define WIFI_PASSWORD               "Empa1982"
 /* WiFi password. Use empty string "" for open networks. */
 
 #define WIFI_TIMEZONE               3

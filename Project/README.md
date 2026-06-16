@@ -1,15 +1,25 @@
 # Tiremo Connect — TmplUserApp
 
-ABOV A34G43x (Cortex-M) firmware for Tiremo devices. Collects sensor data and publishes it to the **Tiremo MQTT broker** (`iot.tiremo.ai`).
+ABOV A34G43x (Cortex-M) firmware for Tiremo devices. Collects sensor data and can publish it to the **Tiremo MQTT broker** (`iot.tiremo.ai`).
 
-Two independent connectivity paths are supported:
+The workshop firmware supports **three applications**, selected in `config/app_config.h`:
+
+| # | Define | Description |
+|---|--------|-------------|
+| **1** | `EMPA_SENSOR_PROCESS` | Read sensors and print to debug UART (button start/stop cycle) |
+| **2** | `EMPA_ESP32_MQTT_AWS` | WiFi via ESP32-C3 → MQTT/TLS |
+| **3** | `EMPA_SLM320_4G` | 4G LTE via MeiG SLM320 → MQTT/TLS |
+
+For the workshop, enable **only one** define at a time. Application 1 is active by default. Step-by-step flashing instructions: **[RunningCode.md](RunningCode.md)**.
+
+Two independent connectivity paths are available for MQTT applications:
 
 | Path | Module | Connection |
 |------|--------|------------|
 | **WiFi** | ESP32-C3 (AT firmware) | Local WiFi → MQTT/TLS |
 | **4G LTE** | MeiG SLM320 | SIM / PDP → MQTT/TLS |
 
-Both paths share the same broker settings and (optionally) the same TLS certificates.
+Both MQTT paths share the same broker settings and TLS certificates.
 
 ---
 
@@ -25,7 +35,7 @@ TmplUserApp/
 │   ├── board_config.h       # Pins, UART instances
 │   ├── network_config.h     # WiFi, APN
 │   └── mqtt_device_config.h # Broker, topics, TLS
-├── certificates/            # PEM / .inc certificate data
+├── certificates/            # Embedded .inc certificate data
 └── Libraries/
     ├── cert_Lib/
     │   └── mqtt_certs.c/.h  # TLS certificate accessors
@@ -48,21 +58,32 @@ TmplUserApp/
 
 ## Feature selection (`config/app_config.h`)
 
+Only **one** workshop application should be active at a time. Comment out the other two defines before building.
+
+**Default (Application 1 — Sensor Process):**
+
 ```c
-//#define EMPA_SENSOR_PROCESS   // Print to terminal only
-//#define EMPA_ESP32_MQTT_AWS   // ESP32 WiFi + MQTT
-#define EMPA_SLM320_4G          // SLM320 4G + MQTT
+#define EMPA_SENSOR_PROCESS
+//#define EMPA_ESP32_MQTT_AWS
+//#define EMPA_SLM320_4G
 
 #define APP_PUBLISH_INTERVAL_MS  2000U
 ```
 
 | Flag | Behavior |
 |------|----------|
-| `EMPA_SENSOR_PROCESS` | Print sensor data to debug UART |
-| `EMPA_ESP32_MQTT_AWS` | WiFi + MQTT via ESP32 |
-| `EMPA_SLM320_4G` | 4G + MQTT via MeiG SLM320 |
+| `EMPA_SENSOR_PROCESS` | Read sensors and print to debug UART. Button toggles measurement cycle on/off. No MQTT. |
+| `EMPA_ESP32_MQTT_AWS` | WiFi + MQTT via ESP32. Certificates uploaded to ESP32 on first boot; erase from ABOV flash with 3 s button press. |
+| `EMPA_SLM320_4G` | 4G + MQTT via MeiG SLM320. Same certificate workflow as ESP32. |
 
-ESP32 and SLM320 can be enabled together; they use different UARTs (UART2 vs UART1).
+### Switching applications
+
+1. Open `config/app_config.h`.
+2. Uncomment the target define and comment out the other two.
+3. For MQTT applications (2 and 3), set your unique `MQTT_DEVICE_NAME` in `config/mqtt_device_config.h`.
+4. In eMStudio32: **Console → right-click → Terminate / Disconnect All**, then **Clean + Build**, then **Run**.
+
+> ESP32 and SLM320 can technically be enabled together in code (different UARTs), but the workshop uses one application at a time.
 
 ---
 
@@ -112,18 +133,30 @@ ESP32 and SLM320 can be enabled together; they use different UARTs (UART2 vs UAR
 
 1. Change `MQTT_USER_ID` and `MQTT_DEVICE_NAME` in `mqtt_device_config.h`.
 2. Download certificates from the broker panel for the new device.
-3. Place PEM files under `certificates/` (fixed names):
-   - `mqtt_rootCA.pem`
-   - `mqtt_certificate.pem`
-   - `mqtt_private.key`
-4. Regenerate matching `.inc` files for the build (`mqtt_certs.c` includes them).
-5. Build and flash.
+3. Update the embedded certificate files under `certificates/`:
+   - `mqtt_rootCA.inc`
+   - `mqtt_certificate.inc`
+   - `mqtt_private.inc`
+4. Build and flash.
 
 ---
 
 ## TLS certificates
 
-### Enable / disable
+### First-boot provisioning (ESP32 / SLM320)
+
+On the first run of Application 2 or 3, TLS certificates embedded in ABOV code-flash are uploaded to the modem (ESP32 or SLM320). The terminal then prompts:
+
+```
+[CERT] Press and hold the button for 3+ seconds to erase the certificates stored in ABOV flash
+```
+
+Hold the user button for **3 seconds** (`APP_BTN_LONG_PRESS_MS`) to erase certificates from ABOV flash. After that:
+
+- A board reset will **not** re-trigger certificate upload.
+- MQTT connections use the certificates stored inside the modem.
+
+### Enable / disable TLS
 
 `mqtt_device_config.h`:
 
@@ -145,8 +178,9 @@ ESP32 and SLM320 can be enabled together; they use different UARTs (UART2 vs UAR
 |------|-------------|
 | `Libraries/cert_Lib/mqtt_certs.c` | Certificate accessor functions |
 | `Libraries/cert_Lib/mqtt_certs.h` | `MqttCerts_GetRootCA()` etc. |
-| `certificates/*.pem` | Raw certificate source |
-| `certificates/*.inc` | Embedded C strings for build |
+| `certificates/mqtt_rootCA.inc` | Root CA (embedded C string) |
+| `certificates/mqtt_certificate.inc` | Client certificate (embedded C string) |
+| `certificates/mqtt_private.inc` | Private key (embedded C string) |
 
 ESP32 and SLM320 both use `MqttCerts_Get*()` functions.
 
@@ -205,8 +239,6 @@ sequenceDiagram
     Drv->>Mod: QMTPUBEX [TLS] or MQTTPUB [plain]
 ```
 
-Detailed AT command reference: **[Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md](Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md)**
-
 ### SLM320 hardware
 
 | Signal | Pin | Description |
@@ -253,6 +285,31 @@ Publish interval: **2 seconds** (`APP_PUBLISH_INTERVAL_MS`).
 
 ---
 
+## Alarm system
+
+Alarm publishing is active in MQTT applications (ESP32 and SLM320). Alarm checks are edge-triggered: the firmware publishes on fault entry and recovery.
+
+- Detection API: `Sensor_PollAlarms(...)`
+- Alarm JSON format: `Sensor_FormatAlarmJSON(...)`
+- Alarm topic: `MQTT_TOPIC_ALARM` (`pub/<user>/<device>/alarm`)
+
+Default thresholds (`Libraries/Sensor/sensor_alarm.h`):
+
+| Alarm | Condition |
+|-------|-----------|
+| Temperature high | `temperature_mC > 30000` (30.0 °C) |
+| Fall detected | `accel_z_mg <= 700` |
+| Loud sound | `mic_rms > 2000` |
+
+Publish flow in main loop:
+
+1. Read sensor data.
+2. Collect pending alarms (`pendingAlarmCount`).
+3. Format each alarm as JSON.
+4. Publish via `MQTT_PublishAlarm()` (ESP32) or `SLM320_PublishAlarm()` (4G).
+
+---
+
 ## Hardware / UART summary
 
 | UART | Usage |
@@ -294,7 +351,9 @@ I2C (PB6/PB7): SHT40, LIS2DE12.
 | File | Contents |
 |------|----------|
 | [README.md](README.md) | This file — project overview |
-| [Libraries/MEIG_SLM3XX/README.md](Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/README.md) | SLM320 driver overview |
+| [RunningCode.md](RunningCode.md) | Workshop guide — build, flash, three applications |
+| [Tiremo/README.md](Tiremo/README.md) | Firmware technical reference |
+| [Libraries/MEIG_SLM3XX/README.md](Tiremo/Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/README.md) | SLM320 driver overview |
 | [Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md](Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md) | SLM320 AT command reference |
 | `config/project_config.h` | All settings (master) |
 | `config/mqtt_device_config.h` | Broker / device / TLS |

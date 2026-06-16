@@ -64,7 +64,7 @@ void app_main(void)
      *    - Device joins local network
      *    - Required before any cloud or time synchronization
      * ------------------------------------------------------------- */
-    wifi_init_sta("AniliPhone", "12345678**");
+    wifi_init_sta("EMPA_ARGE_4G", "Empa1982");
 
     /* -------------------------------------------------------------
      * 7. Start SNTP time synchronization

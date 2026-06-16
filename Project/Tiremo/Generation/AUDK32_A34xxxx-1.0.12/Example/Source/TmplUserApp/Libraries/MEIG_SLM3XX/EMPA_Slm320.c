@@ -29,6 +29,14 @@ uint8_t SLM320_ConnectBroker(void)
     return 1;
 }
 
+uint8_t SLM320_ReconnectBroker(void)
+{
+    SLM320_PowerOff();
+    SYSTICK_Wait(2000);
+    slm320_state = SLM320_STATE_IDLE;
+    return SLM320_ConnectBroker();
+}
+
 uint8_t SLM320_PublishSensorDataApp(const SensorData_t *pData)
 {
     static char jsonBuf[256];

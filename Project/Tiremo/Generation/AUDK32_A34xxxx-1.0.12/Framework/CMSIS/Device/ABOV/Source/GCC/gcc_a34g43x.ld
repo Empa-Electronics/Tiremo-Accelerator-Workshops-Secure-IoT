@@ -125,6 +125,19 @@ SECTIONS
   } > FLASH
 
   /*
+   * Isolated section for TLS certificates.
+   * Page-aligned so these pages can be erased at runtime
+   * without affecting any other firmware code or data.
+   */
+  .cert_flash ALIGN(512) :
+  {
+      __cert_flash_start__ = .;
+      KEEP(*(.cert_flash))
+      . = ALIGN(512);
+      __cert_flash_end__ = .;
+  } > FLASH
+
+  /*
    * SG veneers:
    * All SG veneers are placed in the special output section .gnu.sgstubs. Its start address
    * must be set, either with the command line option �--section-start� or in a linker script,

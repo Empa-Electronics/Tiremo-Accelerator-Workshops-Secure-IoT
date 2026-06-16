@@ -150,6 +150,9 @@ void MqttPort_Init(const MqttPort_Interface *port);
  */
 const MqttPort_Interface* MqttPort_Get(void);
 
+/** 1 ms tick counter (updated from SysTick via MqttPort_ABOV_TickIncrement). */
+uint32_t MqttPort_ABOV_GetTickMs(void);
+
 #ifdef __cplusplus
 }
 #endif

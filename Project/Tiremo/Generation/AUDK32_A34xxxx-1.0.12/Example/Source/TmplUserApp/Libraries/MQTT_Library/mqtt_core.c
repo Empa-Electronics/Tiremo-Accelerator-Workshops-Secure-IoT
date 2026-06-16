@@ -1212,7 +1212,7 @@ FUNC_InitTypeDef MQTT_Init(MQTT_Config *config)
                 mqtt_timer = 0;
 #endif
                 if (mqtt_scheme_needs_client_cert(config->mode_mqtt)) {
-                    MQTTInitCase = MQTT_INIT_STATE_MQTT_CERT_UPLOAD;
+                    MQTTInitCase = MQTT_INIT_STATE_MQTT_USER_CONFIG;
                 } else {
                     MQTTInitCase = MQTT_INIT_STATE_MQTT_USER_CONFIG;
                 }

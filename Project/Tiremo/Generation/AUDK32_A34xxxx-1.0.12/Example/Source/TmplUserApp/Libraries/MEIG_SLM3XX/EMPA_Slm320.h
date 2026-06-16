@@ -13,6 +13,8 @@
 #define SLM320_MAX_TRY_CONNECT   APP_MQTT_CONNECT_RETRIES
 
 uint8_t SLM320_ConnectBroker(void);
+/** Power-cycle modem then run full connect (use after link loss / SIM swap). */
+uint8_t SLM320_ReconnectBroker(void);
 uint8_t SLM320_PublishSensorDataApp(const SensorData_t *pData);
 uint8_t SLM320_PublishAlarm(const char *jsonPayload);
 

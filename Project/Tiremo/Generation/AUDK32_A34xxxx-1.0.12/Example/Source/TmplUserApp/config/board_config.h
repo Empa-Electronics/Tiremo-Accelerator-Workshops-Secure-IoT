@@ -105,4 +105,13 @@
 #define BOARD_MODEM_PWR_PIN         PCU_PIN_ID_4
 /* Module power supply enable pin. */
 
+/* =========================================================================
+ * User button — PC9
+ * ========================================================================= */
+
+#define BOARD_USER_BTN_PORT         PCU_ID_C
+#define BOARD_USER_BTN_PIN          PCU_PIN_ID_9    /* PC9 */
+#define BOARD_USER_BTN_ACTIVE_LEVEL PCU_PORT_LOW    /* pressed = LOW (internal pull-up) */
+#define BOARD_USER_BTN_IRQ_PRIO     3U
+
 #endif /* BOARD_CONFIG_H */

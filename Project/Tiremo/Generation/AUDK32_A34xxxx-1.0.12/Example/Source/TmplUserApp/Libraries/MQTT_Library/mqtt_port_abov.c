@@ -72,6 +72,11 @@ void MqttPort_ABOV_TickIncrement(void)
     s_tick_ms++;
 }
 
+uint32_t MqttPort_ABOV_GetTickMs(void)
+{
+    return s_tick_ms;
+}
+
 /* ---- Port function implementations ----------------------------------- */
 
 static MqttPort_Status abov_uart_transmit(const uint8_t *data, uint16_t len, uint32_t timeout)

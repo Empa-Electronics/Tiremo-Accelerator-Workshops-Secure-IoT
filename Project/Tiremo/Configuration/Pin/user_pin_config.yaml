@@ -796,7 +796,7 @@ USER_PIN_CONFIG:
     - Disable
     - Disable
     - Disable
-    - Disable
+    - Edge
     - Disable
     - Disable
     - NA
@@ -923,7 +923,7 @@ USER_PIN_CONFIG:
     - Disable
     - Disable
     - Disable
-    - Disable
+    - Both Edge
     - Disable
     - Disable
     - NA
@@ -1161,7 +1161,7 @@ USER_PIN_CONFIG:
       port_list:
       - PC
       - PD
-      clock_divider: 0
+      clock_divider: 10
     GROUP2:
       port_list:
       - PE

@@ -57,6 +57,7 @@ Main/Libraries/MP23ABS1 \
 Main/Libraries/MQTT_Library \
 Main/Libraries/SHT40 \
 Main/Libraries/Sensor \
+Main/Libraries/UserButton \
 Main/Libraries/cert_Lib \
 Main \
 

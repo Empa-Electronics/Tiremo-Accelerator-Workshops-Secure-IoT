@@ -23,6 +23,7 @@ extern "C" {
 
 #include "hal_uart.h"
 #include "hal_pcu.h"
+#include "../../config/mqtt_device_config.h"
 #include <stdint.h>
 
 typedef enum
@@ -84,6 +85,15 @@ SLM320_Status_t SLM320_RunStateMachine(void);
 SLM320_Status_t SLM320_PublishSensorData(const char *topic, const char *data);
 SLM320_Status_t SLM320_GetIMEI(void);
 void            SLM320_UART_RxCallback(void);
+
+#if MQTT_USE_TLS_CERTS
+/** Power on modem and wait for AT (for cert upload before full connect). */
+uint8_t         SLM320_BootstrapAt(void);
+/** Upload CA/client/key PEM files to modem UFS via QFUPL. */
+uint8_t         SLM320_CertsUploadAll(void);
+/** Verify cacert.pem, client.pem, user_key.pem exist on modem. */
+uint8_t         SLM320_CertsVerifyAll(void);
+#endif
 
 #ifdef __cplusplus
 }

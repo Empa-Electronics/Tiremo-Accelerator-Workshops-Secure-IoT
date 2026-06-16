@@ -215,6 +215,85 @@ static uint8_t slm320_verify_cert_file(const char *filename)
     return 1U;
 }
 
+#if MQTT_USE_TLS_CERTS
+uint8_t SLM320_CertsVerifyAll(void)
+{
+    if (!slm320_verify_cert_file("cacert.pem"))
+        return 0U;
+    if (!slm320_verify_cert_file("client.pem"))
+        return 0U;
+    if (!slm320_verify_cert_file("user_key.pem"))
+        return 0U;
+    return 1U;
+}
+
+uint8_t SLM320_CertsUploadAll(void)
+{
+    SLM320_ResetRxBuffer();
+    SLM320_SendCmd("AT+QFDEL=\"cacert.pem\"\r\n");
+    SLM320_CheckResponse("OK", 3000);
+    SLM320_ResetRxBuffer();
+
+    SLM320_SendCmd("AT+QFDEL=\"client.pem\"\r\n");
+    SLM320_CheckResponse("OK", 3000);
+    SLM320_ResetRxBuffer();
+
+    SLM320_SendCmd("AT+QFDEL=\"user_key.pem\"\r\n");
+    SLM320_CheckResponse("OK", 3000);
+    SLM320_ResetRxBuffer();
+
+    if (!slm320_upload_pem("cacert.pem", MqttCerts_GetRootCA(), MqttCerts_GetRootCALen()))
+        return 0U;
+    if (!slm320_upload_pem("client.pem", MqttCerts_GetClientCert(), MqttCerts_GetClientCertLen()))
+        return 0U;
+    if (!slm320_upload_pem("user_key.pem", MqttCerts_GetPrivateKey(), MqttCerts_GetPrivateKeyLen()))
+        return 0U;
+
+    return 1U;
+}
+
+uint8_t SLM320_BootstrapAt(void)
+{
+    uint32_t start;
+    uint8_t  i;
+    uint8_t  at_ok = 0U;
+
+    SLM320_PowerOn();
+
+    start = slm320_get_tick_ms();
+    while ((slm320_get_tick_ms() - start) < 15000U)
+    {
+        if (slm320_rx_len > 0U &&
+            (slm320_memmem(slm320_rx_buf, slm320_rx_len, "RDY", 3) != NULL ||
+             slm320_memmem(slm320_rx_buf, slm320_rx_len, "AT READY", 8) != NULL))
+        {
+            break;
+        }
+    }
+
+    for (i = 0U; i < 10U; i++)
+    {
+        SLM320_ResetRxBuffer();
+        SLM320_SendCmd("AT\r\n");
+        if (SLM320_CheckResponse("OK", 3000))
+        {
+            at_ok = 1U;
+            break;
+        }
+        SYSTICK_Wait(500);
+    }
+
+    if (at_ok == 0U)
+        return 0U;
+
+    SLM320_ResetRxBuffer();
+    SLM320_SendCmd("ATE0\r\n");
+    SLM320_CheckResponse("OK", 2000);
+    SLM320_ResetRxBuffer();
+    return 1U;
+}
+#endif /* MQTT_USE_TLS_CERTS */
+
 static uint8_t slm320_qmt_send_cfg(const char *cmd)
 {
     SLM320_ResetRxBuffer();
@@ -347,7 +426,9 @@ SLM320_Status_t SLM320_RunStateMachine(void)
         {
             slm320_mqtt_disconnect_prep();
 #if MQTT_USE_TLS_CERTS
-            slm320_state = SLM320_STATE_MQTT_OPEN;
+            /* Modem already on (e.g. after cert bootstrap) — still run full
+             * network + SSL setup; skipping to MQTT_OPEN breaks QMTCONN. */
+            slm320_state = SLM320_STATE_CHECK_CPIN;
 #else
             slm320_state = SLM320_STATE_MQTT_CONNECT;
 #endif
@@ -430,9 +511,10 @@ SLM320_Status_t SLM320_RunStateMachine(void)
                 return SLM320_OK;
             }
 
-            slm320_log("[SLM320] SIM not ready\r\n");
+            slm320_log("[SLM320] SIM not ready, resetting modem\r\n");
             SLM320_ResetRxBuffer();
-            return SLM320_ERROR;
+            slm320_state = SLM320_STATE_RESET;
+            return SLM320_OK;
         }
 
         case SLM320_STATE_CHECK_CREG:
@@ -565,26 +647,19 @@ SLM320_Status_t SLM320_RunStateMachine(void)
 #if MQTT_USE_TLS_CERTS
     case SLM320_STATE_SSL_CFG:
     {
-        SLM320_SendCmd("AT+QFDEL=\"cacert.pem\"\r\n");
-        SLM320_CheckResponse("OK", 3000);
-        SLM320_ResetRxBuffer();
-
-        SLM320_SendCmd("AT+QFDEL=\"client.pem\"\r\n");
-        SLM320_CheckResponse("OK", 3000);
-        SLM320_ResetRxBuffer();
-
-        SLM320_SendCmd("AT+QFDEL=\"user_key.pem\"\r\n");
-        SLM320_CheckResponse("OK", 3000);
-        SLM320_ResetRxBuffer();
-
-        if (!slm320_upload_pem("cacert.pem", MqttCerts_GetRootCA(), MqttCerts_GetRootCALen()))
-            return SLM320_ERROR;
-
-        if (!slm320_upload_pem("client.pem", MqttCerts_GetClientCert(), MqttCerts_GetClientCertLen()))
-            return SLM320_ERROR;
-
-        if (!slm320_upload_pem("user_key.pem", MqttCerts_GetPrivateKey(), MqttCerts_GetPrivateKeyLen()))
-            return SLM320_ERROR;
+        if (MqttCerts_HasEmbedded() != 0U)
+        {
+            if (!SLM320_CertsUploadAll())
+                return SLM320_ERROR;
+        }
+        else
+        {
+            if (!SLM320_CertsVerifyAll())
+            {
+                slm320_log("[SLM320][SSL] Modem cert files missing\r\n");
+                return SLM320_ERROR;
+            }
+        }
 
         snprintf(cmd_buf, sizeof(cmd_buf),
                  "AT+QSSLCFG=\"cacert\",%u,\"cacert.pem\"\r\n",

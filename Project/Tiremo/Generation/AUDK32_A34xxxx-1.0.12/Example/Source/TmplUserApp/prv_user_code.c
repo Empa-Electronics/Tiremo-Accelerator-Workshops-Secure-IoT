@@ -24,7 +24,10 @@
 #include "Libraries/Sensor/sensor.h"
 #include "Libraries/Sensor/sensor_alarm.h"
 #include "config/project_config.h"
+#include "Libraries/UserButton/user_button.h"
 #include "Libraries/MEIG_SLM3XX/EMPA_Slm320.h"
+#include "Libraries/cert_Lib/mqtt_cert_provision.h"
+#include "Libraries/cert_Lib/mqtt_certs.h"
 
 
 extern void MqttPort_ABOV_Init(void);
@@ -33,6 +36,9 @@ extern void MP23ABS1_TimerHandler(void);
 
 extern uint32_t SystemCoreClock;
 static volatile uint32_t s_un32SysTimerVal=0;
+
+void LED_ON(PCU_ID_e port, PCU_PIN_ID_e pin);
+void LED_OFF(PCU_ID_e port, PCU_PIN_ID_e pin);
 
 /**********************************************************************
  * @brief		ARM System Timer Interrupt Handler.
@@ -51,6 +57,7 @@ void SysTick_Handler (void)
 
     /* MQTT port tick (1ms) - needed for UART receive timeout */
     MqttPort_ABOV_TickIncrement();
+    UserButton_Tick1ms();
 
     /* mqtt_timer: 1 tick per second (thresholds in mqtt_core.c are in seconds) */
     if (mqtt_timer_en) {
@@ -83,7 +90,7 @@ void SysTick_Handler (void)
 void SYSTICK_Wait (uint32_t un32TimeMS)
 {
     s_un32SysTimerVal = un32TimeMS;
-    while(s_un32SysTimerVal);
+    while (s_un32SysTimerVal);
 }
 
 /**********************************************************************
@@ -141,7 +148,7 @@ void GPIO_Config_Alt()
     HAL_PCU_SetAltMode(BOARD_LED8_PORT, BOARD_LED8_PIN, PCU_ALT_0);
     HAL_PCU_SetAltMode(BOARD_LED9_PORT, BOARD_LED9_PIN, PCU_ALT_0);
     HAL_PCU_SetAltMode(BOARD_LED10_PORT, BOARD_LED10_PIN, PCU_ALT_0);
-
+    HAL_PCU_SetAltMode(BOARD_USER_BTN_PORT, BOARD_USER_BTN_PIN, PCU_ALT_0);
 #if defined(EMPA_SLM320_4G)
     HAL_PCU_SetAltMode(SLM320_PWRKEY_PORT, SLM320_PWRKEY_PIN, PCU_ALT_0);
     HAL_PCU_SetAltMode(SLM320_PWR_PORT, SLM320_PWR_PIN, PCU_ALT_0);
@@ -167,6 +174,7 @@ void PRV_USER_Code(void)
 {
     SysTick_Config(SystemCoreClock / APP_SYSTICK_1MS_DIV);
     GPIO_Config_Alt();
+    UserButton_Init();
 
     /* 1. Debug Framework Init */
     if (DebugFramework_Init())
@@ -188,15 +196,25 @@ void PRV_USER_Code(void)
 
 
     /* 2. LED Hardware Test */
+#if defined(EMPA_SENSOR_PROCESS) || defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)
     Sensor_LEDTest();
+#endif
 
-    /* 3. Sensor Test - initialize and verify all sensors */
-    uint8_t sensorFails = Sensor_TestAll();
-    if (sensorFails > 0)
+    /* 3. Sensor init */
+#if defined(EMPA_SENSOR_PROCESS) || defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)
     {
-        DebugFramework_Printf("[WARN] %u sensor(s) failed init\n\r", sensorFails);
+        uint8_t sensorFails = Sensor_TestAll();
+        if (sensorFails > 0U)
+        {
+            DebugFramework_Printf("[WARN] %u sensor(s) failed init\n\r", sensorFails);
+        }
+        SYSTICK_Wait(1000);
     }
-    SYSTICK_Wait(1000);
+#endif
+
+#if defined(EMPA_SENSOR_PROCESS)
+    DebugFramework_PutsLine("[APP] Press button to start/stop sensor cycle");
+#endif
 
     /* 4. SLM320 4G Module Init */
 #if defined(EMPA_SLM320_4G)
@@ -223,12 +241,34 @@ void PRV_USER_Code(void)
     {
         DebugFramework_PutsLine("[FAIL] ESP32 NOT responding");
     }
+
+    MqttPort_ABOV_Init();
+#endif
+
+    /* 4.5 TLS certificate provisioning (shared by ESP32 and/or SLM320) */
+#if (defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)) && MQTT_USE_TLS_CERTS
+#if defined(EMPA_ESP32_MQTT_AWS)
+    extern char mqttPacketBuffer[];
+#endif
+    if (MqttCerts_HasEmbedded() != 0U)
+    {
+#if defined(EMPA_ESP32_MQTT_AWS)
+        if (MqttCertProv_Run(mqttPacketBuffer, MQTT_DATA_PACKET_BUFF_SIZE) != 0)
+#else
+        if (MqttCertProv_Run(NULL, 0U) != 0)
+#endif
+            DebugFramework_PutsLine("[CERT] Kurulum basarisiz — MQTT denenecek");
+    }
+    else
+    {
+        DebugFramework_PutsLine("[CERT] ABOV'da sertifika yok");
+        MqttCerts_LogFlashIfPresent();
+    }
 #endif
 
     /* 5. MQTT Connect */
 #if defined(EMPA_ESP32_MQTT_AWS)
     DebugFramework_PutsLine("\n\r[MQTT] Connecting to broker...");
-    MqttPort_ABOV_Init();
     uint8_t mqttConnected = (MQTT_ConnectBroker() == 0) ? 1 : 0;
     if (mqttConnected)
         DebugFramework_PutsLine("[MQTT] Ready to publish sensor data\n\r");
@@ -248,8 +288,10 @@ void PRV_USER_Code(void)
 #endif
 
     /* 6. Main Loop */
-    uint32_t cycle = 0;
-    (void)cycle;
+    uint32_t cycle = 0U;
+#if defined(EMPA_SENSOR_PROCESS)
+    uint8_t cycleRunning = 0U;
+#endif
     int mqtt_data_count = 1;
     while (1)
     {
@@ -257,10 +299,34 @@ void PRV_USER_Code(void)
         uint8_t pendingAlarmCount = 0U;
 
 #if defined(EMPA_SENSOR_PROCESS)
+        if (UserButton_ConsumeShortPress() != 0U)
+        {
+            cycleRunning = (cycleRunning == 0U) ? 1U : 0U;
+            if (cycleRunning != 0U)
+                DebugFramework_PutsLine("[APP] Cycle started");
+            else
+                DebugFramework_PutsLine("[APP] Cycle stopped");
+        }
+
+        if (cycleRunning == 0U)
+        {
+            SYSTICK_Wait(50U);
+            continue;
+        }
+
         DebugFramework_PutsLine("\n\r========================================");
-        DebugFramework_Printf("   CYCLE #%lu\n\r", cycle++);
+        DebugFramework_Printf("   CYCLE #%lu\n\r", (unsigned long)cycle++);
         DebugFramework_PutsLine("========================================");
+        LED_Blink(BOARD_LED7_PORT, BOARD_LED7_PIN, 1U);
         SensorData_t *pData = Sensor_ReadAndPrint();
+        (void)pData;
+
+        if (UserButton_ConsumeShortPress() != 0U)
+        {
+            cycleRunning = 0U;
+            DebugFramework_PutsLine("[APP] Cycle stopped");
+            continue;
+        }
 #elif defined(EMPA_ESP32_MQTT_AWS) || defined(EMPA_SLM320_4G)
         SensorData_t *pData = Sensor_ReadOnly();
         pendingAlarmCount = Sensor_PollAlarms(pData, pendingAlarms, SENSOR_ALARM_MAX_PER_CYCLE);
@@ -309,7 +375,7 @@ void PRV_USER_Code(void)
         else
         {
             DebugFramework_PutsLine("[SLM320] Not connected, reconnecting...");
-            slm320Connected = (SLM320_ConnectBroker() == 0) ? 1 : 0;
+            slm320Connected = (SLM320_ReconnectBroker() == 0) ? 1 : 0;
             if (slm320Connected)
             {
                 DebugFramework_PutsLine("[SLM320] Reconnected successfully!");

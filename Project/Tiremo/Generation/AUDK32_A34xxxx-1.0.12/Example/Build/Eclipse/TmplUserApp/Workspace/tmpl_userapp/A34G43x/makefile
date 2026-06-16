@@ -9,6 +9,7 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include Main/Libraries/cert_Lib/subdir.mk
+-include Main/Libraries/UserButton/subdir.mk
 -include Main/Libraries/Sensor/subdir.mk
 -include Main/Libraries/SHT40/subdir.mk
 -include Main/Libraries/MQTT_Library/subdir.mk
@@ -97,7 +98,7 @@ main-build: Tiremo.elf secondary-outputs
 Tiremo.elf: $(OBJS) $(USER_OBJS) makefile objects.mk $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GNU Arm Cross C Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mlittle-endian -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -g3 -T "C:/Users/sinan/Desktop/Tiremo/Generation/AUDK32_A34xxxx-1.0.12/Example/Build/Eclipse/TmplUserApp/Workspace/tmpl_userapp/../../../../../../Framework/CMSIS/Device/ABOV/Source/GCC/gcc_a34g43x.ld" -Xlinker --gc-sections -Wl,-Map,"Tiremo.map" --specs=nano.specs --specs=nosys.specs -Wl,--no-warn-rwx-segment -o "Tiremo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mlittle-endian -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -g3 -T "C:/Users/sinan/Desktop/mainapp/Tiremo/Generation/AUDK32_A34xxxx-1.0.12/Example/Build/Eclipse/TmplUserApp/Workspace/tmpl_userapp/../../../../../../Framework/CMSIS/Device/ABOV/Source/GCC/gcc_a34g43x.ld" -Xlinker --gc-sections -Wl,-Map,"Tiremo.map" --specs=nano.specs --specs=nosys.specs -Wl,--no-warn-rwx-segment -o "Tiremo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
