@@ -12,20 +12,15 @@ Welcome to the **Tiremo® Accelerator Workshops** by **Empa Electronics**. This 
 
 ## About the Board
 
-This development board is designed by **Empa Electronics** specifically for Edge AI and cloud-IoT applications, and it is delivered with full software support. It is powered by the high-performance **ABOV A34G43ARL2N** microcontroller (ARM® Cortex®-M4F) and features an integrated onboard debugger to streamline your development workflow.
+This development board is designed by Empa Electronics specifically for Edge AI and cloud-IoT applications, and it is delivered with full software support. It is powered by the high-performance ABOV A34G43ARL2N microcontroller (ARM® Cortex®-M4F) and features an integrated onboard debugger to streamline your development workflow.
 
-### Hardware specifications
+**Hardware Specifications:**
 
-| Feature | Details |
-|---------|---------|
-| **Sensors** | Analog MEMS microphone, 3-axis accelerometer, temperature/humidity sensors |
-| **User interface** | Ten user LEDs and one user button |
-| **Connectivity** | Integrated Wi-Fi and Bluetooth LE module |
-| **Power & debug** | USB Type-C port (CN6) for power, flashing, and serial debug |
-
-### System architecture
-
-Sensors on the board convert physical stimuli into electronic signals for analysis at the edge or in the cloud. The firmware uses lightweight protocols such as **MQTT** to transmit telemetry reliably over low-bandwidth connections. During this workshop, sensor data is routed to the **Tiremo MQTT broker** (`iot.tiremo.ai`) over **Wi-Fi** or **4G LTE**. Cloud IoT platforms then gather, store, and visualize this data in a centralized system — enabling low-latency, energy-efficient applications when the right sensors and connectivity are chosen at the edge.
+- **Sensors:** Built-in analog MEMS microphone, 3-axis accelerometer, and temperature/humidity sensors for comprehensive environmental monitoring.
+- **User Interface:** Ten user LEDs and a single user button facilitate rich visual feedback and physical interaction.
+- **Connectivity:** An integrated Wi-Fi and Bluetooth LE module connects device data to the cloud or other peripheral hardware. During this workshop, sensor telemetry is routed to the Tiremo MQTT broker (iot.tiremo.ai) over Wi-Fi or 4G LTE.
+- **Power & Debug:** A USB Type-C port (CN6) handles power delivery, firmware flashing, and serial debugging.
+- **System Architecture:** The board's sensors convert physical stimuli into electronic signals optimized for analysis either locally at the edge or remotely in the cloud. It leverages lightweight protocols like MQTT to transmit data reliably across low-bandwidth connections. Cloud IoT platforms then gather, store, and visualize this telemetry in a centralized system, driving low-latency and energy-efficient applications when the right sensors and connectivity are chosen at the edge.
 
 ---
 
