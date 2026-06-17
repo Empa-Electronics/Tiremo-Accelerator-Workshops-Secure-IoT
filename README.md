@@ -1,3 +1,4 @@
+![BANNER](Document/banner.jpg)
 # Tiremo® Accelerator Workshops — Secure IoT
 
 Welcome to the **Tiremo® Accelerator Workshops** by **Empa Electronics**. This repository contains firmware source code, pre-built binaries, and step-by-step guides for the hands-on workshop.
