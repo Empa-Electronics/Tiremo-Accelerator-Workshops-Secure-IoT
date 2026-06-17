@@ -22,6 +22,7 @@ This guide walks you through downloading the Tiremo® Accelerator Workshops repo
      - [Application 3 — SLM320 4G MQTT](#application-3--slm320-4g-mqtt-empa_slm320_4g)
 4. [Flash via Binary (aFlasher32)](#4-flash-via-binary-aflasher32)
 5. [View Debug Messages (Tera Term)](#5-view-debug-messages-tera-term)
+6. [Configure Peripherals with MCUBrew32 (Optional)](#6-configure-peripherals-with-mcubrew32-optional)
 
 ---
 
@@ -433,6 +434,89 @@ You can now watch debug messages from the firmware in real time.
 
 ---
 
+## 6. Configure Peripherals with MCUBrew32 (Optional)
+
+> **Workshop note:** You do **not** need MCUBrew32 to complete the workshop activities. The repository already includes a fully generated AUDK32 project. Use this section only if you want to change pin, clock, or peripheral settings and regenerate the base project code.
+
+**MCUBrew32** is ABOV's configuration tool for pin multiplexing, clock trees, and peripheral setup. It integrates with eMStudio32 and generates AUDK32-based starter code.
+
+**Prerequisites:** [MCUBrew32 installed](../SetUp.md#2-mcubrew32-installation) and the project imported in eMStudio32 (see [Section 3](#3-open-the-project-in-emstudio32)).
+
+### Step 1 — Open MCUBrew32 from eMStudio32
+
+1. In eMStudio32, select the project in **Project Explorer**.
+2. Click the **ABOV** button in the toolbar.
+3. Select **Config eMStudio32 Project**.
+
+![Open Config eMStudio32 Project from the ABOV menu](../Document/RunningCode/image24.png)
+
+### Step 2 — Confirm the configuration dialog
+
+In the dialog that opens, click **Finish**. MCUBrew32 launches with the current project settings.
+
+![Click Finish to open MCUBrew32](../Document/RunningCode/image25.png)
+
+### Step 3 — Install the AUDK32 SDK (LOCAL)
+
+Before generating code, MCUBrew32 needs the **AUDK32** package for the A34G43x family. The workshop repository includes the SDK archive:
+
+```
+Abov_SDK\AUDK32_A34xxxx-1.0.12.zip
+```
+
+> Keep the file as a **`.zip` archive** — do not extract it before installation.
+
+1. In MCUBrew32, open the **PROJECT** menu on the toolbar.
+2. Click **LOCAL**.
+3. Browse to `Abov_SDK\AUDK32_A34xxxx-1.0.12.zip` in the cloned repository and select it.
+
+![PROJECT → LOCAL in MCUBrew32](../Document/RunningCode/image26.png)
+
+![Select AUDK32_A34xxxx-1.0.12.zip](../Document/RunningCode/image27.png)
+
+4. Click **Install**.
+
+![Click Install](../Document/RunningCode/image28.png)
+
+5. When **Complete Install** appears, click **OK**. The SDK is ready.
+
+![SDK installation complete](../Document/RunningCode/image29.png)
+
+### Step 4 — Install the AUDK32 SDK (ONLINE, alternative)
+
+Instead of a local ZIP file, you can download the same SDK version online:
+
+1. In MCUBrew32, open **PROJECT → Manage**.
+
+![PROJECT → Manage](../Document/RunningCode/image30.png)
+
+2. Select **AUDK32_A34xxxx-1.0.12** (same version as in the repository).
+3. Click **Install** and wait for the download to finish.
+
+![Select AUDK32_A34xxxx-1.0.12 and click Install](../Document/RunningCode/image31.png)
+
+### Step 5 — Configure peripherals and generate code
+
+1. In MCUBrew32, set the device to **A34xxxx → A34G43x**.
+2. Adjust pin, clock, and peripheral settings in the configuration panels.
+3. Click **Code Generate** to export the updated project files.
+
+![Configure peripherals and click Code Generate](../Document/RunningCode/image32.png)
+
+4. Return to eMStudio32 and run **Project → Clean…**, then **Project → Build Project**.
+
+> **Warning:** Regenerating code may overwrite generated HAL and configuration files. Back up any custom changes under `Example/Source/TmplUserApp/` before generating.
+
+### MCUBrew32 troubleshooting
+
+| Error | Likely cause | Fix |
+|-------|--------------|-----|
+| `Failed to preparation application : appBuilder.prepareBuilder` | AUDK32 SDK not installed in MCUBrew32 | Complete [Step 3](#step-3--install-the-audk32-sdk-local) or [Step 4](#step-4--install-the-audk32-sdk-online-alternative) |
+| Device variant not available | Wrong SDK version | Install **AUDK32_A34xxxx-1.0.12** exactly |
+| Generate overwrites custom code | Expected MCUBrew32 behavior | Back up `TmplUserApp` sources before generating |
+
+---
+
 ## Next Steps
 
 - Review the firmware source and MQTT configuration in [Tiremo/README.md](Tiremo/README.md).
@@ -443,3 +527,5 @@ You can now watch debug messages from the firmware in real time.
 <p align="center">
   <sub>© Empa Electronics — Tiremo® Accelerator Workshops</sub>
 </p>
+
+
