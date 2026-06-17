@@ -20,7 +20,8 @@ This development board is designed by Empa Electronics specifically for Edge AI 
 - **User Interface:** Ten user LEDs and a single user button facilitate rich visual feedback and physical interaction.
 - **Connectivity:** An integrated Wi-Fi and Bluetooth LE module connects device data to the cloud or other peripheral hardware. During this workshop, sensor telemetry is routed to the Tiremo MQTT broker (iot.tiremo.ai) over Wi-Fi or 4G LTE.
 - **Power & Debug:** A USB Type-C port (CN6) handles power delivery, firmware flashing, and serial debugging.
-- **System Architecture:** The board's sensors convert physical stimuli into electronic signals optimized for analysis either locally at the edge or remotely in the cloud. It leverages lightweight protocols like MQTT to transmit data reliably across low-bandwidth connections. Cloud IoT platforms then gather, store, and visualize this telemetry in a centralized system, driving low-latency and energy-efficient applications when the right sensors and connectivity are chosen at the edge.
+
+System Architecture, the board's sensors convert physical stimuli into electronic signals optimized for analysis either locally at the edge or remotely in the cloud. It leverages lightweight protocols like MQTT to transmit data reliably across low-bandwidth connections. Cloud IoT platforms then gather, store, and visualize this telemetry in a centralized system, driving low-latency and energy-efficient applications when the right sensors and connectivity are chosen at the edge.
 
 ---
 
