@@ -11,15 +11,15 @@ This guide walks you through downloading the Tiremo® Accelerator Workshops repo
 1. [Download the Repository](#1-download-the-repository)
 2. [Extract the Project](#2-extract-the-project)
 3. [Open the Project in eMStudio32](#3-open-the-project-in-emstudio32)
-   - [Launch eMStudio32](#31-launch-emstudio32)
-   - [Select Workspace](#32-select-workspace)
-   - [Import the Project](#33-import-the-project)
-   - [Select Project Directory](#34-select-project-directory)
-   - [Configure Device Name](#35-configure-device-name)
-   - [Applications](#36-applications)
-     - [Application 1 — Sensor Process](#application-1--sensor-process-empa_sensor_process)
-     - [Application 2 — ESP32 MQTT](#application-2--esp32-mqtt-empa_esp32_mqtt_aws)
-     - [Application 3 — SLM320 4G MQTT](#application-3--slm320-4g-mqtt-empa_slm320_4g)
+  - [Launch eMStudio32](#31-launch-emstudio32)
+  - [Select Workspace](#32-select-workspace)
+  - [Import the Project](#33-import-the-project)
+  - [Select Project Directory](#34-select-project-directory)
+  - [Configure Device Name](#35-configure-device-name)
+  - [Applications](#36-applications)
+    - [Application 1 — Sensor Process](#application-1--sensor-process-empa_sensor_process)
+    - [Application 2 — ESP32 MQTT](#application-2--esp32-mqtt-empa_esp32_mqtt_aws)
+    - [Application 3 — SLM320 4G MQTT](#application-3--slm320-4g-mqtt-empa_slm320_4g)
 4. [Flash via Binary (aFlasher32)](#4-flash-via-binary-aflasher32)
 5. [View Debug Messages (Tera Term)](#5-view-debug-messages-tera-term)
 6. [Configure Peripherals with MCUBrew32 (Optional)](#6-configure-peripherals-with-mcubrew32-optional)
@@ -44,7 +44,7 @@ git clone https://github.com/Empa-Electronics/Tiremo-Accelerator-Workshops-Secur
 
 After downloading, extract the ZIP archive to a folder on your computer. You should see the project structure including the `Project`, `Binary`, and `Document` folders.
 
-![Extract the downloaded project](../Document/RunningCode/image0.png)
+Extract the downloaded project
 
 ---
 
@@ -54,23 +54,23 @@ After downloading, extract the ZIP archive to a folder on your computer. You sho
 
 Open the **eMStudio32** integrated development environment (IDE).
 
-![Open eMStudio32](../Document/RunningCode/image1.png)
+Open eMStudio32
 
 ### 3.2 Select Workspace
 
 When prompted, choose your workspace folder and click **Launch**.
 
-![Select workspace and click Launch](../Document/RunningCode/image2.png)
+Select workspace and click Launch
 
 ### 3.3 Import the Project
 
 In the top toolbar, click the **ABOV** button.
 
-![Click the ABOV button in the toolbar](../Document/RunningCode/image3.png)
+Click the ABOV button in the toolbar
 
 From the menu, select **Open eMStudio32 Project**.
 
-![Open eMStudio32 Project](../Document/RunningCode/image4.png)
+Open eMStudio32 Project
 
 ### 3.4 Select Project Directory
 
@@ -86,26 +86,13 @@ Relative to the extracted `Project` folder, the full path is:
 Project\Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Build\Eclipse\TmplUserApp\Workspace\tmpl_userapp
 ```
 
-![Click Directory and select the project path](../Document/RunningCode/image5.png)
+Click Directory and select the project path
 
 Click **Finish** to import the project.
 
-![Click Finish](../Document/RunningCode/image6.png)
+Click Finish
 
 After import, run **Project → Clean…** (select the **A34G43x** configuration), then **Project → Build Project** once before flashing. This regenerates local build files for your PC.
-
-> **Build error: `Program "make" not found in PATH`**
->
-> eMStudio32 uses GNU **make** from its bundled **xpack-windows-build-tools**. This error means `make.exe` is missing or not on the build PATH — usually because eMStudio32 was not fully installed, or the IDE was not started from the official **eMStudio32** shortcut.
->
-> 1. Close eMStudio32.
-> 2. Confirm this file exists (path may vary slightly by version):
->    `C:\Program Files (x86)\ABOV\eMStudio32\bin\xpack-windows-build-tools-*\bin\make.exe`
->    or `C:\ABOV\eMStudio32\bin\xpack-windows-build-tools-*\bin\make.exe`
-> 3. If missing, **repair or reinstall** eMStudio32 using the [installation guide](../SetUp.md#1-emstudio32-installation).
-> 4. Start eMStudio32 from the Start Menu shortcut, re-import the project, then **Clean + Build**.
->
-> See also [SetUp.md — eMStudio32 build troubleshooting](../SetUp.md#emstudio32-build-troubleshooting).
 
 ### 3.5 Configure Device Name
 
@@ -137,11 +124,13 @@ Replace the `1` with **your own participant number**. For example, if you are pa
 #define MQTT_DEVICE_NAME            "hun5"
 ```
 
-| Application | Device name required? |
-|-------------|----------------------|
-| **1 — Sensor Process** | No — MQTT is not used |
-| **2 — ESP32 MQTT** | **Yes** — set before build/flash |
+
+| Application            | Device name required?            |
+| ---------------------- | -------------------------------- |
+| **1 — Sensor Process** | No — MQTT is not used            |
+| **2 — ESP32 MQTT**     | **Yes** — set before build/flash |
 | **3 — SLM320 4G MQTT** | **Yes** — set before build/flash |
+
 
 Save the file, then proceed to the application section below.
 
@@ -165,11 +154,13 @@ Relative to the extracted `Project` folder:
 Project\Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Source\TmplUserApp\config\app_config.h
 ```
 
-| Application | Define | Pre-built HEX file |
-|-------------|--------|-------------------|
+
+| Application            | Define                | Pre-built HEX file        |
+| ---------------------- | --------------------- | ------------------------- |
 | **1 — Sensor Process** | `EMPA_SENSOR_PROCESS` | `empa_sensor_process.hex` |
-| **2 — ESP32 MQTT** | `EMPA_ESP32_MQTT_AWS` | `empa_esp32_mqtt_aws.hex` |
-| **3 — SLM320 4G MQTT** | `EMPA_SLM320_4G` | `empa_slm320_4g.hex` |
+| **2 — ESP32 MQTT**     | `EMPA_ESP32_MQTT_AWS` | `empa_esp32_mqtt_aws.hex` |
+| **3 — SLM320 4G MQTT** | `EMPA_SLM320_4G`      | `empa_slm320_4g.hex`      |
+
 
 All HEX files are in the repository `Binary` folder:
 
@@ -206,9 +197,9 @@ This is the **default workshop application**. `EMPA_SENSOR_PROCESS` is already e
 4. Expand **GDB OpenOCD Debugging** and select **A34G43x**.
 5. Click **Run** to flash the firmware.
 
-![Click Build](../Document/RunningCode/image7.png)
+Click Build
 
-![Click Run](../Document/RunningCode/image8.png)
+Click Run
 
 Open a serial terminal (see [Section 5](#5-view-debug-messages-tera-term)) and press the button to start the sensor cycle.
 
@@ -254,11 +245,11 @@ When switching from another application, terminate any active debug session firs
 
 1. In the **Console / Terminal** view, right-click and select **Terminate / Disconnect All**.
 
-![Terminate / Disconnect All](../Document/RunningCode/image23.png)
+Terminate / Disconnect All
 
-2. Save `app_config.h` and `mqtt_device_config.h`.
-3. Right-click the project → **Build Project**.
-4. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
+1. Save `app_config.h` and `mqtt_device_config.h`.
+2. Right-click the project → **Build Project**.
+3. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
 
 **After flashing**
 
@@ -307,11 +298,11 @@ Make sure you completed [Section 3.5 — Configure Device Name](#35-configure-de
 
 1. In the **Console / Terminal** view, right-click and select **Terminate / Disconnect All**.
 
-![Terminate / Disconnect All](../Document/RunningCode/image23.png)
+Terminate / Disconnect All
 
-2. Save `app_config.h` and `mqtt_device_config.h`.
-3. Right-click the project → **Build Project**.
-4. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
+1. Save `app_config.h` and `mqtt_device_config.h`.
+2. Right-click the project → **Build Project**.
+3. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
 
 **After flashing**
 
@@ -346,57 +337,59 @@ In the downloaded repository, open the `Binary` folder:
 
 Select the HEX file for your application:
 
-| Application | HEX file |
-|-------------|----------|
+
+| Application            | HEX file                  |
+| ---------------------- | ------------------------- |
 | **1 — Sensor Process** | `empa_sensor_process.hex` |
-| **2 — ESP32 MQTT** | `empa_esp32_mqtt_aws.hex` |
-| **3 — SLM320 4G MQTT** | `empa_slm320_4g.hex` |
+| **2 — ESP32 MQTT**     | `empa_esp32_mqtt_aws.hex` |
+| **3 — SLM320 4G MQTT** | `empa_slm320_4g.hex`      |
+
 
 > For Application 2 and 3, complete [Section 3.5 — Configure Device Name](#35-configure-device-name) and build from the IDE if you need a unique participant number. Pre-built HEX files use the default `hun1` device name.
 
-![Binary folder — HEX file](../Document/RunningCode/image15.png)
+Binary folder — HEX file
 
 ### Step 2 — Open aFlasher32
 
 Launch the **aFlasher32** application.
 
-![Click App](../Document/RunningCode/image16.png)
+Click App
 
 ### Step 3 — Verify board connection
 
 When the board is connected, a blue **aLinkUart2** message appears on screen — this confirms the connection.
 
-![aLinkUart2 connection message](../Document/RunningCode/image17.png)
+aLinkUart2 connection message
 
 ### Step 4 — Select target device
 
 In the **Target Device** field, select your board's microcontroller model.
 
-![Select target device](../Document/RunningCode/image18.png)
+Select target device
 
 ### Step 5 — Load the HEX file
 
 Click **Code, Data, Cfg** and select the HEX file from the `Binary` folder.
 
-![Select HEX file via Code, Data, Cfg](../Document/RunningCode/image19.png)
+Select HEX file via Code, Data, Cfg
 
 ### Step 6 — Clear read protection
 
 A **Read Protection** dialog appears. Keep the default option **Clear read protection** selected and click **OK**.
 
-![Read Protection — Clear read protection](../Document/RunningCode/image20.png)
+Read Protection — Clear read protection
 
 ### Step 7 — Program the firmware
 
 Click **Program** to flash the firmware onto the board.
 
-![Click Program](../Document/RunningCode/image21.png)
+Click Program
 
 ### Step 8 — Confirm success
 
 When an **OK** message is displayed, the firmware has been loaded successfully.
 
-![Programming complete — OK message](../Document/RunningCode/image22.png)
+Programming complete — OK message
 
 ---
 
@@ -408,27 +401,27 @@ To monitor debug output from the board, use your preferred serial terminal or **
 
 Launch the **Tera Term** application.
 
-![Open Tera Term](../Document/RunningCode/image10.png)
+Open Tera Term
 
 ### Step 2 — Create a new connection
 
 Go to **File → New connection**.
 
-![File → New connection](../Document/RunningCode/image11.png)
+File → New connection
 
 ### Step 3 — Select the COM port
 
 In the dialog, select the **COM port** assigned to your Tiremo®Cortex board.
 
-![Select COM port](../Document/RunningCode/image12.png)
+Select COM port
 
 ### Step 4 — Configure serial port settings
 
 After connecting, go to **Setup → Serial port** in the toolbar. Configure the UART settings, then click **New setting** to open the terminal.
 
-![Serial port settings — Setup](../Document/RunningCode/image13.png)
+Serial port settings — Setup
 
-![Serial port settings — New setting](../Document/RunningCode/image14.png)
+Serial port settings — New setting
 
 You can now watch debug messages from the firmware in real time.
 
@@ -445,16 +438,16 @@ You can now watch debug messages from the firmware in real time.
 ### Step 1 — Open MCUBrew32 from eMStudio32
 
 1. In eMStudio32, select the project in **Project Explorer**.
-2. Click the **ABOV** button in the toolbar.
+2. Click the **ABOV** button in the toolbar.s
 3. Select **Config eMStudio32 Project**.
 
-![Open Config eMStudio32 Project from the ABOV menu](../Document/RunningCode/image24.png)
+Open Config eMStudio32 Project from the ABOV menu
 
-### Step 2 — Confirm the configuration dialog
+### Step 2 — Confirm the configuration dialogslm
 
 In the dialog that opens, click **Finish**. MCUBrew32 launches with the current project settings.
 
-![Click Finish to open MCUBrew32](../Document/RunningCode/image25.png)
+Click Finish to open MCUBrew32
 
 ### Step 3 — Install the AUDK32 SDK (LOCAL)
 
@@ -464,23 +457,23 @@ Before generating code, MCUBrew32 needs the **AUDK32** package for the A34G43x f
 Abov_SDK\AUDK32_A34xxxx-1.0.12.zip
 ```
 
-> Keep the file as a **`.zip` archive** — do not extract it before installation.
+> Keep the file as a `**.zip` archive** — do not extract it before installation.
 
 1. In MCUBrew32, open the **PROJECT** menu on the toolbar.
 2. Click **LOCAL**.
 3. Browse to `Abov_SDK\AUDK32_A34xxxx-1.0.12.zip` in the cloned repository and select it.
 
-![PROJECT → LOCAL in MCUBrew32](../Document/RunningCode/image26.png)
+PROJECT → LOCAL in MCUBrew32
 
-![Select AUDK32_A34xxxx-1.0.12.zip](../Document/RunningCode/image27.png)
+Select AUDK32_A34xxxx-1.0.12.zip
 
-4. Click **Install**.
+1. Click **Install**.
 
-![Click Install](../Document/RunningCode/image28.png)
+Click Install
 
-5. When **Complete Install** appears, click **OK**. The SDK is ready.
+1. When **Complete Install** appears, click **OK**. The SDK is ready.
 
-![SDK installation complete](../Document/RunningCode/image29.png)
+SDK installation complete
 
 ### Step 4 — Install the AUDK32 SDK (ONLINE, alternative)
 
@@ -488,12 +481,12 @@ Instead of a local ZIP file, you can download the same SDK version online:
 
 1. In MCUBrew32, open **PROJECT → Manage**.
 
-![PROJECT → Manage](../Document/RunningCode/image30.png)
+PROJECT → Manage
 
-2. Select **AUDK32_A34xxxx-1.0.12** (same version as in the repository).
-3. Click **Install** and wait for the download to finish.
+1. Select **AUDK32_A34xxxx-1.0.12** (same version as in the repository).
+2. Click **Install** and wait for the download to finish.
 
-![Select AUDK32_A34xxxx-1.0.12 and click Install](../Document/RunningCode/image31.png)
+Select AUDK32_A34xxxx-1.0.12 and click Install
 
 ### Step 5 — Configure peripherals and generate code
 
@@ -501,19 +494,21 @@ Instead of a local ZIP file, you can download the same SDK version online:
 2. Adjust pin, clock, and peripheral settings in the configuration panels.
 3. Click **Code Generate** to export the updated project files.
 
-![Configure peripherals and click Code Generate](../Document/RunningCode/image32.png)
+Configure peripherals and click Code Generate
 
-4. Return to eMStudio32 and run **Project → Clean…**, then **Project → Build Project**.
+1. Return to eMStudio32 and run **Project → Clean…**, then **Project → Build Project**.
 
 > **Warning:** Regenerating code may overwrite generated HAL and configuration files. Back up any custom changes under `Example/Source/TmplUserApp/` before generating.
 
 ### MCUBrew32 troubleshooting
 
-| Error | Likely cause | Fix |
-|-------|--------------|-----|
+
+| Error                                                           | Likely cause                          | Fix                                                                                                                      |
+| --------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `Failed to preparation application : appBuilder.prepareBuilder` | AUDK32 SDK not installed in MCUBrew32 | Complete [Step 3](#step-3--install-the-audk32-sdk-local) or [Step 4](#step-4--install-the-audk32-sdk-online-alternative) |
-| Device variant not available | Wrong SDK version | Install **AUDK32_A34xxxx-1.0.12** exactly |
-| Generate overwrites custom code | Expected MCUBrew32 behavior | Back up `TmplUserApp` sources before generating |
+| Device variant not available                                    | Wrong SDK version                     | Install **AUDK32_A34xxxx-1.0.12** exactly                                                                                |
+| Generate overwrites custom code                                 | Expected MCUBrew32 behavior           | Back up `TmplUserApp` sources before generating                                                                          |
+
 
 ---
 
@@ -524,8 +519,4 @@ Instead of a local ZIP file, you can download the same SDK version online:
 
 ---
 
-<p align="center">
-  <sub>© Empa Electronics — Tiremo® Accelerator Workshops</sub>
-</p>
-
-
+© Empa Electronics — Tiremo® Accelerator Workshops

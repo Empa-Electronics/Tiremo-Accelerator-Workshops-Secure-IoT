@@ -371,12 +371,11 @@ Before pushing: search the repo for `C:/Users/` and `--no-warn-rwx-segment`. Rem
 |------|----------|
 | [README.md](README.md) | This file — project overview |
 | [RunningCode.md](RunningCode.md) | Workshop guide — build, flash, three applications |
-| [Tiremo/README.md](Tiremo/README.md) | Firmware technical reference |
-| [Libraries/MEIG_SLM3XX/README.md](Tiremo/Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/README.md) | SLM320 driver overview |
-| [Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md](Generation/AUDK32_A34xxxx-1.0.12/Example/Source/TmplUserApp/Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md) | SLM320 AT command reference |
+| [Libraries/MEIG_SLM3XX/README.md](Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Source\TmplUserApp\Libraries\MEIG_SLM3XX\README.md) | SLM320 driver overview |
+| [Libraries/MEIG_SLM3XX/SLM320_AT_Commands.md](Tiremo\Generation\AUDK32_A34xxxx-1.0.12\Example\Source\TmplUserApp\Libraries\MEIG_SLM3XX\SLM320_AT_Commands.md) | SLM320 AT command reference |
 | `config/project_config.h` | All settings (master) |
 | `config/mqtt_device_config.h` | Broker / device / TLS |
 
----
 
+C:\Users\sinan\Desktop\EmpaWork\EmpaWork\Tiremo-Accelerator-Workshops-Secure_IoT\Tiremo-Accelerator-Workshops-Secure-IoT\README.md
 *Tiremo Connect v2.0 — ABOV A34G43x*
