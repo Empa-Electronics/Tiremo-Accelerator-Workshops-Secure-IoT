@@ -4,6 +4,22 @@ This guide walks you through downloading the Tiremo® Accelerator Workshops repo
 
 > **Prerequisites:** Complete the [Development Environment Setup](../SetUp.md) before starting this activity.
 
+### İnstall and project paths
+
+To avoid toolchain path errors during build, use the same folder layout on every PC:
+
+| What | Recommended path |
+|------|------------------|
+| **eMStudio32** | `C:\ABOV\eMStudio32` |
+| **MCUBrew32** | `C:\ABOV\MCUBrew32` |
+| **Workshop repository** (cloned or extracted) | `C:\Tiremo-Accelerator-Workshops-Secure-IoT` |
+
+During installation of **eMStudio32** and **MCUBrew32**, create the `C:\ABOV` folder if it does not exist and choose these paths when the installer asks for the destination directory. See [SetUp.md](../SetUp.md) for download links and full installation steps.
+
+After you download or clone the repository, **extract or copy the whole project to `C:\`** (for example `C:\Tiremo-Accelerator-Workshops-Secure-IoT`). Do not run the Eclipse project from a deep or synced folder (Desktop, OneDrive, etc.) if you can avoid it.
+
+> **Build tip:** Always run **Project → Clean…** (select the **A34G43x** configuration), then **Project → Build Project** — not Build alone. Clean regenerates makefiles for your PC before the first build and after switching applications.
+
 ---
 
 ## Table of Contents
@@ -42,9 +58,17 @@ git clone https://github.com/Empa-Electronics/Tiremo-Accelerator-Workshops-Secur
 
 ## 2. Extract the Project
 
-After downloading, extract the ZIP archive to a folder on your computer. You should see the project structure including the `Project`, `Binary`, and `Document` folders.
+After downloading, extract the ZIP archive to **`C:\`**. A typical location is:
 
-Extract the downloaded project
+```
+C:\Tiremo-Accelerator-Workshops-Secure-IoT
+```
+
+You should see the top-level folders `Project`, `Binary`, `Document`, and `Abov_SDK`.
+
+> **Important:** Place the extracted Tiremo workshop project on the **C: drive**, not only on Desktop or inside a cloud-synced folder. Short paths under `C:\` reduce build and import problems in eMStudio32.
+
+Extract the downloaded project to `C:\`
 
 ---
 
@@ -52,7 +76,7 @@ Extract the downloaded project
 
 ### 3.1 Launch eMStudio32
 
-Open the **eMStudio32** integrated development environment (IDE).
+Open **eMStudio32** from the Start Menu or desktop shortcut installed at **`C:\ABOV\eMStudio32`**. Do not open the project with a generic Eclipse install.
 
 Open eMStudio32
 
@@ -92,7 +116,7 @@ Click **Finish** to import the project.
 
 Click Finish
 
-After import, run **Project → Clean…** (select the **A34G43x** configuration), then **Project → Build Project** once before flashing. This regenerates local build files for your PC.
+After import, run **Project → Clean…** (select the **A34G43x** configuration), then **Project → Build Project** once before flashing. **Always use Clean before Build** — especially on first import and after changing `app_config.h`. Clean regenerates local makefiles for your PC.
 
 ### 3.5 Configure Device Name
 
@@ -192,7 +216,7 @@ This is the **default workshop application**. `EMPA_SENSOR_PROCESS` is already e
 **Build and flash (IDE)**
 
 1. Connect a **USB Type-C** cable to the **CN6** connector on your Tiremo®Cortex board.
-2. Right-click the project in **Project Explorer** → **Build Project**.
+2. **Project → Clean…** (configuration **A34G43x**), then right-click the project in **Project Explorer** → **Build Project**.
 3. Right-click the project again → **Run As → Run Configurations…**
 4. Expand **GDB OpenOCD Debugging** and select **A34G43x**.
 5. Click **Run** to flash the firmware.
@@ -248,7 +272,7 @@ When switching from another application, terminate any active debug session firs
 Terminate / Disconnect All
 
 1. Save `app_config.h` and `mqtt_device_config.h`.
-2. Right-click the project → **Build Project**.
+2. **Project → Clean…** (configuration **A34G43x**), then right-click the project → **Build Project**.
 3. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
 
 **After flashing**
@@ -301,7 +325,7 @@ Make sure you completed [Section 3.5 — Configure Device Name](#35-configure-de
 Terminate / Disconnect All
 
 1. Save `app_config.h` and `mqtt_device_config.h`.
-2. Right-click the project → **Build Project**.
+2. **Project → Clean…** (configuration **A34G43x**), then right-click the project → **Build Project**.
 3. Right-click the project → **Run As → Run Configurations…** → **GDB OpenOCD Debugging → A34G43x** → **Run**.
 
 **After flashing**
@@ -433,7 +457,9 @@ You can now watch debug messages from the firmware in real time.
 
 **MCUBrew32** is ABOV's configuration tool for pin multiplexing, clock trees, and peripheral setup. It integrates with eMStudio32 and generates AUDK32-based starter code.
 
-**Prerequisites:** [MCUBrew32 installed](../SetUp.md#2-mcubrew32-installation) and the project imported in eMStudio32 (see [Section 3](#3-open-the-project-in-emstudio32)).
+**Prerequisites:** [MCUBrew32 installed](../SetUp.md#2-mcubrew32-installation) at **`C:\ABOV\MCUBrew32`** (same `C:\ABOV` parent folder as eMStudio32), workshop project extracted under **`C:\`**, and the Tiremo project imported in eMStudio32 (see [Section 3](#3-open-the-project-in-emstudio32)).
+
+> **Important (known MCUBrew32 issue):** After MCUBrew32 opens, **do not close it with the window X button**. Closing with **X** can **delete Eclipse makefiles** (`makefile`, `subdir.mk`, …) and the project will no longer build in eMStudio32 (`make not found` or missing build files). Finish your work with **Code Generate**, then return to eMStudio32 and close MCUBrew32 only if the tool offers a normal exit path — avoid **X** until ABOV releases a fixed version.
 
 ### Step 1 — Open MCUBrew32 from eMStudio32
 
@@ -448,6 +474,8 @@ Open Config eMStudio32 Project from the ABOV menu
 In the dialog that opens, click **Finish**. MCUBrew32 launches with the current project settings.
 
 Click Finish to open MCUBrew32
+
+> Do **not** dismiss MCUBrew32 with the **X** button after it opens — see the warning at the start of this section.
 
 ### Step 3 — Install the AUDK32 SDK (LOCAL)
 
@@ -492,11 +520,14 @@ Select AUDK32_A34xxxx-1.0.12 and click Install
 
 1. In MCUBrew32, set the device to **A34xxxx → A34G43x**.
 2. Adjust pin, clock, and peripheral settings in the configuration panels.
-3. Click **Code Generate** to export the updated project files.
+3. **Before you click Code Generate**, open the **Peripheral** tab once (even if you did not change any peripheral). If you skip this step, MCUBrew32 may **clear or drop peripheral settings** during code generation.
+4. Click **Code Generate** to export the updated project files.
 
 Configure peripherals and click Code Generate
 
-1. Return to eMStudio32 and run **Project → Clean…**, then **Project → Build Project**.
+5. Return to eMStudio32 (switch back to the IDE window). Run **Project → Clean…** (configuration **A34G43x**), then **Project → Build Project**. Do not skip Clean after MCUBrew32 regenerates files.
+
+> If you already closed MCUBrew32 with **X** and the build broke, restore the project from Git (`git checkout` on the `A34G43x` build folder) or re-clone the repository. ABOV is addressing this behaviour in an upcoming MCUBrew32 / eMStudio32 release.
 
 > **Warning:** Regenerating code may overwrite generated HAL and configuration files. Back up any custom changes under `Example/Source/TmplUserApp/` before generating.
 
@@ -508,6 +539,8 @@ Configure peripherals and click Code Generate
 | `Failed to preparation application : appBuilder.prepareBuilder` | AUDK32 SDK not installed in MCUBrew32 | Complete [Step 3](#step-3--install-the-audk32-sdk-local) or [Step 4](#step-4--install-the-audk32-sdk-online-alternative) |
 | Device variant not available                                    | Wrong SDK version                     | Install **AUDK32_A34xxxx-1.0.12** exactly                                                                                |
 | Generate overwrites custom code                                 | Expected MCUBrew32 behavior           | Back up `TmplUserApp` sources before generating                                                                          |
+| Peripheral settings lost after **Code Generate**                | **Peripheral** tab not opened before generate | Open the **Peripheral** tab once before **Code Generate**, even if you made no changes                              |
+| Build fails after MCUBrew32 (`make not found`, missing `subdir.mk`) | MCUBrew32 closed with the window **X** button | Do not use **X**; restore build files from Git or re-clone. ABOV fix pending in a newer tool version                  |
 
 
 ---
